@@ -93,6 +93,16 @@
     .nav-link:hover { color: var(--text); background: var(--surface); }
     .nav-link.active { color: var(--text); background: var(--surface); font-weight: 400; }
 
+    .nav-link.nav-hint {
+      animation: navHint 0.6s var(--hint-delay, 0ms) ease both;
+    }
+    @keyframes navHint {
+      0%   { transform: translateX(0);   color: var(--muted); }
+      40%  { transform: translateX(6px); color: var(--text);  }
+      70%  { transform: translateX(-2px); }
+      100% { transform: translateX(0);   color: var(--muted); }
+    }
+
     .nav-sep { height: 1px; background: var(--border); margin: 10px 14px; }
 
     /* ─── Sidebar footer ─── */
@@ -1119,6 +1129,18 @@ gallery.addEventListener('touchend', e => {
   if (dx < 0 && galleryCurrent < galleryItems.length - 1) showItem(galleryCurrent + 1);
   if (dx > 0 && galleryCurrent > 0) showItem(galleryCurrent - 1);
 });
+
+// ═══ Default panel + category hint ═══
+activatePanel('about');
+
+setTimeout(() => {
+  const catLinks = document.querySelectorAll('.nav-link[data-target]:not([data-target="about"]):not([data-target="pricing"])');
+  catLinks.forEach((el, i) => {
+    el.style.setProperty('--hint-delay', `${i * 80}ms`);
+    el.classList.add('nav-hint');
+    el.addEventListener('animationend', () => el.classList.remove('nav-hint'), { once: true });
+  });
+}, 2000);
 </script>
 </body>
 </html>
