@@ -371,22 +371,183 @@
     .gallery-thumb:hover { opacity: 0.75; }
     .gallery-thumb-ph { font-size: 9px; font-weight: 300; color: rgba(255,255,255,0.3); }
 
+    /* Hide mobile-only elements on desktop */
+    .mobile-pricing-btn { display: none; }
+
     /* ─── Responsive ─── */
     @media (max-width: 1100px) { .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 680px; } }
     @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; max-width: 400px; } }
 
     @media (max-width: 780px) {
-      body { flex-direction: column; overflow: auto; height: auto; }
-      .sidebar { width: 100%; min-width: 0; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 24px 20px 20px; }
-      .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      body { flex-direction: column; overflow: auto; height: 100vh; }
+
+      /* ── Fixed top bar ── */
+      .sidebar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        width: 100%; min-width: 0;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 0;
+        z-index: 200;
+        background: var(--bg);
+        overflow: visible;
+        animation: none;
+      }
+
+      /* Profile row — always visible */
+      .profile-top {
+        display: flex;
+        margin-bottom: 0;
+        padding: 14px 20px 12px;
+        border-radius: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* Horizontal scrollable nav */
+      .nav {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 8px 16px 10px;
+        gap: 4px;
+        scrollbar-width: none;
+        flex: none;
+      }
+      .nav::-webkit-scrollbar { display: none; }
+
+      .nav-link {
+        white-space: nowrap;
+        padding: 7px 14px;
+        font-size: 12.5px;
+        border-radius: 100px;
+        border: 1px solid transparent;
+      }
+
+      .nav-link.active {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+      }
+
       .nav-sep { display: none; }
-      .main { height: auto; overflow-y: visible; }
-      .panel { padding: 36px 24px 56px; }
-      .panel-title { font-size: 30px; }
-      .sidebar-foot { margin-top: 16px; }
+
+      /* Hide desktop footer — replaced by floating button */
+      .sidebar-foot { display: none; }
+
+      /* Pricing pill — top right (mobile only) */
+      .mobile-pricing-btn { display: flex; }
+      .mobile-pricing-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        padding: 5px 12px 5px 10px;
+        font-family: 'Archivo', sans-serif;
+        font-size: 11.5px;
+        font-weight: 400;
+        color: var(--muted);
+        cursor: pointer;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        transition: border-color 180ms, color 180ms;
+      }
+      .mobile-pricing-btn:hover { border-color: var(--subtle); color: var(--text); }
+      .mobile-pricing-btn svg { width: 11px; height: 11px; }
+
+      /* Push content below fixed bar (profile ~62px + nav ~48px) */
+      .main {
+        margin-left: 0;
+        margin-top: 110px;
+        height: auto;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .panel { padding: 32px 20px 72px; }
+      .panel-title { font-size: 28px; }
+      .panel-sub { font-size: 12px; }
       .about-profile { flex-direction: column; gap: 20px; }
-      .gallery-stage { padding: 0 52px; }
       .about-stats { gap: 24px; flex-wrap: wrap; }
+      .gallery-stage { padding: 0 48px; }
+      .reels-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+      .photos-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+
+      /* Hide Pricing from nav on mobile */
+      .nav-link[data-target="pricing"] { display: none; }
+
+      /* Pricing — compact single column */
+      .pricing-grid { grid-template-columns: 1fr; max-width: 100%; gap: 12px; }
+      .price-card { border-radius: 12px; }
+      .price-header { padding: 18px 20px 14px; }
+      .price-package { font-size: 8.5px; margin-bottom: 8px; }
+      .price-amount { font-size: 32px; }
+      .price-amount span { font-size: 13px; }
+      .price-tagline { font-size: 11px; margin-top: 4px; }
+      .price-body { padding: 14px 20px 16px; }
+      .price-section-label { font-size: 8.5px; margin-top: 14px; margin-bottom: 8px; }
+      .price-choose { font-size: 11px; margin-bottom: 8px; }
+      .price-items { gap: 7px; }
+      .price-item { font-size: 12px; }
+      .price-addons { margin-top: 14px; padding-top: 14px; gap: 8px; }
+      .addon-name, .addon-price { font-size: 11.5px; }
+      .price-footer { padding: 12px 20px 16px; }
+      .price-cta { padding: 12px; font-size: 12.5px; }
+      .pricing-note { font-size: 11px; margin-top: 10px; }
+    }
+
+    /* ── Mobile floating Connect button ── */
+    .mobile-connect {
+      display: none;
+    }
+
+    @media (max-width: 780px) {
+      .mobile-connect {
+        display: flex;
+        position: fixed;
+        bottom: 24px; right: 20px;
+        z-index: 300;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+      }
+
+      .mobile-connect-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--text);
+        color: var(--bg);
+        border: none;
+        border-radius: 100px;
+        padding: 12px 20px;
+        font-family: 'Archivo', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+        transition: opacity 200ms, transform 180ms;
+      }
+      .mobile-connect-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+      .mobile-connect-btn svg { width: 13px; height: 13px; }
+
+      .mobile-connect-options {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        min-width: 200px;
+      }
+
+      .mobile-connect-options.open { display: flex; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -405,10 +566,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
     </div>
-    <div>
+    <div style="flex:1">
       <div class="profile-name">Syed Adeel Hassan</div>
       <div class="profile-role">Photographer &amp; Videographer</div>
     </div>
+    <!-- Mobile-only pricing button -->
+    <button class="mobile-pricing-btn" id="mobile-pricing-btn" aria-label="View pricing">Pricing</button>
   </div>
 
   <ul class="nav" id="nav">
@@ -596,6 +759,28 @@
 
 </main>
 
+<!-- ═══ Mobile floating Connect ═══ -->
+<div class="mobile-connect" id="mobile-connect">
+  <div class="mobile-connect-options" id="mobile-connect-options">
+    <a class="connect-opt" href="https://wa.me/971553358446?text=Hi%20Adeel%2C%20I%27d%20love%20to%20discuss%20a%20project." target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+    <a class="connect-opt" href="mailto:adeel.hasan@hotmail.com?subject=Project%20Enquiry" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Email
+    </a>
+    <a class="connect-opt" href="https://instagram.com/syedadeelhasan" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      @syedadeelhasan
+    </a>
+  </div>
+  <button class="mobile-connect-btn" id="mobile-connect-toggle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Connect
+  </button>
+</div>
+
 <!-- ═══ Gallery ═══ -->
 <div class="gallery" id="gallery" role="dialog" aria-modal="true">
   <div class="gallery-header">
@@ -722,18 +907,27 @@ const profileTop = document.getElementById('profile-top');
 profileTop.addEventListener('click', () => activatePanel('about'));
 profileTop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activatePanel('about'); } });
 
-// ═══ 3. Connect toggle ═══
-const toggle   = document.getElementById('connect-toggle');
-const connOpts = document.getElementById('connect-options');
-toggle.addEventListener('click', () => {
-  const open = connOpts.classList.toggle('open');
-  toggle.setAttribute('aria-expanded', open);
-});
-document.addEventListener('click', e => {
-  if (!toggle.contains(e.target) && !connOpts.contains(e.target)) {
-    connOpts.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-  }
+// ═══ 3. Connect toggle (desktop + mobile) ═══
+function makeToggle(btnId, optId) {
+  const btn  = document.getElementById(btnId);
+  const opts = document.getElementById(optId);
+  if (!btn || !opts) return;
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    opts.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!btn.contains(e.target) && !opts.contains(e.target))
+      opts.classList.remove('open');
+  });
+}
+makeToggle('connect-toggle',        'connect-options');
+makeToggle('mobile-connect-toggle', 'mobile-connect-options');
+
+// Mobile pricing button
+document.getElementById('mobile-pricing-btn')?.addEventListener('click', e => {
+  e.stopPropagation();
+  activatePanel('pricing');
 });
 
 // ═══ 4. Gallery ═══
