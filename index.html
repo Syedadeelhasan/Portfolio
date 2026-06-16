@@ -1131,7 +1131,18 @@ gallery.addEventListener('touchend', e => {
 });
 
 // ═══ Default panel + category hint ═══
-activatePanel('about');
+const VALID_PANELS = ['about','fashion','realestate','personal','fitness','automotive','pricing'];
+function activatePanelAndSave(target) { activatePanel(target); location.hash = target; }
+document.getElementById('nav').addEventListener('click', e => {}, { capture: true }); // already handled above
+// Override nav clicks to also save hash
+document.querySelectorAll('.nav-link').forEach(l => {
+  l.addEventListener('click', () => { if (l.dataset.target) location.hash = l.dataset.target; });
+});
+profileTop.addEventListener('click', () => { location.hash = 'about'; });
+document.getElementById('mobile-pricing-btn')?.addEventListener('click', () => { location.hash = 'pricing'; });
+
+const savedPanel = location.hash.replace('#', '');
+activatePanel(VALID_PANELS.includes(savedPanel) ? savedPanel : 'about');
 
 setTimeout(() => {
   const catLinks = document.querySelectorAll('.nav-link[data-target]:not([data-target="about"]):not([data-target="pricing"])');
