@@ -414,8 +414,20 @@
         gap: 4px;
         scrollbar-width: none;
         flex: none;
+        /* Fade edges to hint scrollability */
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 88%, transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0%, black 5%, black 88%, transparent 100%);
       }
       .nav::-webkit-scrollbar { display: none; }
+
+      /* Nudge animation on load to hint scrollability */
+      .nav { animation: navNudge 1s 0.8s ease both; }
+      @keyframes navNudge {
+        0%   { transform: translateX(0); }
+        30%  { transform: translateX(-18px); }
+        60%  { transform: translateX(4px); }
+        100% { transform: translateX(0); }
+      }
 
       .nav-link {
         white-space: nowrap;
