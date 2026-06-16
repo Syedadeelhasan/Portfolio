@@ -610,10 +610,9 @@
 <!-- ═══ Sidebar ═══ -->
 <aside class="sidebar">
   <div class="profile-top" id="profile-top" role="button" tabindex="0">
-    <div class="avatar-sm">
-      <!-- ✏️ Replace with your photo: <img src="media/profile.jpg" alt="Adeel"> -->
-      <img src="media/profile.jpg" alt="Syed Adeel Hassan">
-      <div class="avatar-placeholder">
+    <div class="avatar-sm" id="avatar-sm">
+      <img src="media/profile.jpg" alt="Adeel" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="avatar-placeholder" style="display:none">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
     </div>
@@ -683,8 +682,8 @@
 
     <div class="about-profile">
       <div class="about-avatar">
-        <!-- ✏️ Replace with: <img src="media/profile.jpg" alt="Syed Adeel Hassan"> -->
-        <div class="about-avatar-placeholder">
+        <img src="media/profile.jpg" alt="Syed Adeel Hassan" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="about-avatar-placeholder" style="display:none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           <span>Your photo</span>
         </div>
