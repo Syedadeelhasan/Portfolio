@@ -1,42 +1,26 @@
-import os
-import json
+name: Generate Manifest
 
-# Which folders map to which category key
-CATEGORIES = {
-    "fashion":    "media/fashion",
-    "realestate": "media/realestate",
-    "personal":   "media/personal",
-    "fitness":    "media/fitness",
-    "automotive": "media/automotive",
-}
+on:
+  push:
+    branches:
+      - main
 
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
-VIDEO_EXTS = {".mp4", ".mov", ".webm"}
+permissions:
+  contents: write
 
-manifest = {}
+jobs:
+  build-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-for key, folder in CATEGORIES.items():
-    reels  = []
-    photos = []
+      - name: Generate manifest.json
+        run: python3 generate-manifest.py
 
-    reels_dir  = os.path.join(folder, "reels")
-    photos_dir = os.path.join(folder, "photos")
-
-    if os.path.isdir(reels_dir):
-        for f in sorted(os.listdir(reels_dir)):
-            if os.path.splitext(f)[1].lower() in VIDEO_EXTS:
-                reels.append(f"{reels_dir}/{f}")
-
-    if os.path.isdir(photos_dir):
-        for f in sorted(os.listdir(photos_dir)):
-            if os.path.splitext(f)[1].lower() in IMAGE_EXTS:
-                photos.append(f"{photos_dir}/{f}")
-
-    manifest[key] = {"reels": reels, "photos": photos}
-
-with open("manifest.json", "w") as f:
-    json.dump(manifest, f, indent=2)
-
-print("manifest.json generated:")
-for key, val in manifest.items():
-    print(f"  {key}: {len(val['reels'])} reels, {len(val['photos'])} photos")
+      - name: Commit manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git diff --staged --quiet || git commit -m "chore: update manifest.json"
+          git push
