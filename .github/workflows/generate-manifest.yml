@@ -40,4 +40,3 @@ with open("manifest.json", "w") as f:
 print("✅ manifest.json generated:")
 for key, val in manifest.items():
     print(f"  {key}: {len(val['reels'])} reels, {len(val['photos'])} photos")
-
