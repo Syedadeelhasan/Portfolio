@@ -244,7 +244,20 @@
     .about-bio { font-size: 14px; font-weight: 300; line-height: 1.78; color: var(--muted); }
     .about-bio strong { color: var(--text); font-weight: 400; }
 
-    .about-stats { display: flex; gap: 40px; margin-bottom: 48px; }
+    .about-stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    /* Stats counter animation */
+    .about-stats .stat-item {
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .about-stats .stat-item:nth-child(1) { animation-delay: 0.15s; }
+    .about-stats .stat-item:nth-child(2) { animation-delay: 0.3s; }
+    .about-stats .stat-item:nth-child(3) { animation-delay: 0.45s; }
     .stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 300; letter-spacing: -0.03em; color: var(--text); line-height: 1; margin-bottom: 3px; }
     .stat-label { font-size: 10.5px; font-weight: 300; color: var(--subtle); letter-spacing: 0.08em; text-transform: uppercase; }
 
@@ -373,6 +386,8 @@
 
     /* Hide mobile-only elements on desktop */
     .mobile-pricing-btn { display: none; }
+    .nav-wrap { position: relative; }
+    .nav-arrow { display: none; }
 
     /* ─── Responsive ─── */
     @media (max-width: 1100px) { .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 680px; } }
@@ -428,6 +443,29 @@
         60%  { transform: translateX(4px); }
         100% { transform: translateX(0); }
       }
+
+      /* Scroll arrow */
+      .nav-arrow {
+        display: flex;
+        position: absolute;
+        right: 0; top: 0; bottom: 0;
+        align-items: center;
+        padding: 0 10px 0 4px;
+        background: linear-gradient(to right, transparent, var(--bg) 55%);
+        pointer-events: none;
+        transition: opacity 300ms ease;
+        z-index: 1;
+      }
+      .nav-arrow svg {
+        width: 14px; height: 14px;
+        color: var(--subtle);
+        animation: arrowPulse 1.4s 1.2s ease-in-out infinite;
+      }
+      @keyframes arrowPulse {
+        0%, 100% { transform: translateX(0); opacity: 0.5; }
+        50%       { transform: translateX(3px); opacity: 1; }
+      }
+      .nav-arrow.hidden { opacity: 0; }
 
       .nav-link {
         white-space: nowrap;
@@ -586,6 +624,7 @@
     <button class="mobile-pricing-btn" id="mobile-pricing-btn" aria-label="View pricing">Pricing</button>
   </div>
 
+  <div class="nav-wrap">
   <ul class="nav" id="nav">
     <li><a class="nav-link" data-target="about" href="#">About</a></li>
     <div class="nav-sep"></div>
@@ -597,6 +636,10 @@
     <div class="nav-sep"></div>
     <li><a class="nav-link" data-target="pricing" href="#">Pricing</a></li>
   </ul>
+  <div class="nav-arrow" id="nav-arrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9,6 15,12 9,18"/></svg>
+  </div>
+  </div>
 
   <div class="sidebar-foot">
     <button class="connect-btn" id="connect-toggle" aria-expanded="false">
@@ -630,6 +673,13 @@
       <p class="eyebrow">Who Am I?</p>
       <h1 class="panel-title">I Shoot What<br>Moves Me.</h1>
     </div>
+
+    <div class="about-stats">
+      <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">Years experience</div></div>
+      <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">Content verticals</div></div>
+      <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Frames per story</div></div>
+    </div>
+
     <div class="about-profile">
       <div class="about-avatar">
         <!-- ✏️ Replace with: <img src="media/profile.jpg" alt="Syed Adeel Hassan"> -->
@@ -646,11 +696,6 @@
           I bring the same obsessive energy to every project, whether it's capturing sweat on a barbell or chrome under golden light.
         </p>
       </div>
-    </div>
-    <div class="about-stats">
-      <div><div class="stat-num">10+</div><div class="stat-label">Years experience</div></div>
-      <div><div class="stat-num">5</div><div class="stat-label">Content verticals</div></div>
-      <div><div class="stat-num">∞</div><div class="stat-label">Frames per story</div></div>
     </div>
     <div class="block">
       <div class="block-head"><span class="block-label">Specialties</span><div class="block-rule"></div></div>
@@ -897,6 +942,17 @@ async function loadManifest() {
 }
 
 loadManifest();
+
+// ═══ Nav scroll arrow ═══
+(function () {
+  const navEl = document.getElementById('nav');
+  const navArrow = document.getElementById('nav-arrow');
+  if (!navEl || !navArrow) return;
+  navEl.addEventListener('scroll', () => {
+    if (navEl.scrollLeft > 20) navArrow.classList.add('hidden');
+    else navArrow.classList.remove('hidden');
+  }, { passive: true });
+})();
 
 // ═══ 2. Navigation ═══
 function activatePanel(target) {
