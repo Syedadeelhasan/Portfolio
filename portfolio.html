@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syed Adeel Hassan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #F9F9F8;
+      --surface: #F2F2F0;
+      --border:  #E5E5E2;
+      --text:    #0C0C0B;
+      --muted:   #737370;
+      --subtle:  #ABABAB;
+      --sidebar: 240px;
+    }
+
+    body {
+      font-family: 'Archivo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ─── Sidebar ─── */
+    .sidebar {
+      width: var(--sidebar);
+      min-width: var(--sidebar);
+      height: 100vh;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 36px 24px;
+      overflow-y: auto;
+      flex-shrink: 0;
+      animation: fadeUp 0.55s ease both;
+    }
+
+    .profile-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 10px;
+      transition: background 180ms ease;
+    }
+    .profile-top:hover { background: var(--surface); }
+
+    .avatar-sm {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .avatar-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--subtle); }
+    .avatar-placeholder svg { width: 16px; height: 16px; }
+
+    .profile-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--text); line-height: 1.2;
+    }
+    .profile-role { font-size: 10.5px; font-weight: 300; color: var(--subtle); letter-spacing: 0.02em; margin-top: 1px; }
+
+    /* ─── Nav ─── */
+    .nav { list-style: none; display: flex; flex-direction: column; gap: 1px; flex: 1; }
+
+    .nav-link {
+      display: block;
+      font-size: 13.5px; font-weight: 300;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 9px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+      transition: color 180ms ease, background 180ms ease;
+      cursor: pointer; user-select: none;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface); }
+    .nav-link.active { color: var(--text); background: var(--surface); font-weight: 400; }
+
+    .nav-sep { height: 1px; background: var(--border); margin: 10px 14px; }
+
+    /* ─── Sidebar footer ─── */
+    .sidebar-foot { padding-top: 24px; display: flex; flex-direction: column; gap: 8px; }
+
+    .connect-btn {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      background: var(--text); color: var(--bg);
+      border: none; border-radius: 8px;
+      padding: 11px 16px;
+      font-family: 'Archivo', sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 0.05em;
+      cursor: pointer; width: 100%;
+      transition: opacity 200ms, transform 180ms;
+    }
+    .connect-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+    .connect-btn svg { width: 12px; height: 12px; }
+
+    .connect-options { display: none; flex-direction: column; gap: 5px; }
+    .connect-options.open { display: flex; }
+
+    .connect-opt {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 12px; border-radius: 7px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 12px; font-weight: 300; color: var(--text);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 160ms, transform 160ms; cursor: pointer;
+    }
+    .connect-opt:hover { background: var(--border); transform: translateX(2px); }
+    .connect-opt svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--muted); }
+
+    .foot-copy { font-size: 10px; color: var(--subtle); font-weight: 300; letter-spacing: 0.03em; text-align: center; padding-top: 4px; }
+
+    /* ─── Main ─── */
+    .main { flex: 1; height: 100vh; overflow-y: auto; }
+
+    /* ─── Panel ─── */
+    .panel { display: none; padding: 60px 68px 88px; max-width: 1180px; }
+    .panel.active { display: block; animation: fadeUp 0.4s ease both; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-head { margin-bottom: 52px; }
+
+    .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--subtle); margin-bottom: 10px; }
+
+    .panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 40px; font-weight: 300; letter-spacing: -0.03em; line-height: 1; color: var(--text); }
+
+    .panel-sub { margin-top: 10px; font-size: 13px; font-weight: 300; font-style: italic; color: var(--muted); }
+
+    /* ─── Block ─── */
+    .block { margin-bottom: 52px; }
+    .block-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .block-label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--subtle); white-space: nowrap; }
+    .block-rule { flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── Reels grid ─── */
+    .reels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 12px; }
+
+    .reel-card {
+      aspect-ratio: 9/16;
+      background: var(--surface);
+      border-radius: 10px; overflow: hidden; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      transition: transform 280ms cubic-bezier(.25,.46,.45,.94), box-shadow 280ms cubic-bezier(.25,.46,.45,.94);
+    }
+    .reel-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 48px rgba(0,0,0,0.08); }
+    .reel-card video, .reel-card img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+
+    .card-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent;
+      transition: background 200ms;
+    }
+    .reel-card:hover .card-overlay { background: rgba(0,0,0,0.08); }
+
+    .play-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.9);
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(4px);
+      transition: background 200ms, border-color 200ms;
+    }
+    .reel-card:hover .play-ring { background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.9); }
+    .play-ring svg { width: 12px; height: 12px; }
+
+    /* Placeholder reel (no video yet) */
+    .reel-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface);
+    }
+    .reel-placeholder .play-ring { border-color: var(--border); color: var(--muted); background: transparent; backdrop-filter: none; }
+    .reel-card:hover .reel-placeholder .play-ring { border-color: var(--subtle); color: var(--text); background: transparent; }
+
+    /* ─── Photos grid ─── */
+    .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+
+    .photo-card {
+      aspect-ratio: 4/3;
+      background: var(--surface);
+      border-radius: 10px; overflow: hidden; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      transition: transform 280ms cubic-bezier(.25,.46,.45,.94), box-shadow 280ms cubic-bezier(.25,.46,.45,.94);
+    }
+    .photo-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 48px rgba(0,0,0,0.08); }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--border);
+    }
+    .photo-placeholder svg { width: 22px; height: 22px; }
+
+    /* ─── Empty state ─── */
+    .empty { padding: 28px 0; display: flex; align-items: center; gap: 14px; color: var(--subtle); font-size: 12px; font-weight: 300; letter-spacing: 0.04em; }
+    .empty::before { content: ''; width: 18px; height: 1px; background: var(--border); flex-shrink: 0; }
+
+    /* ─── Loading state ─── */
+    .loading { padding: 28px 0; display: flex; align-items: center; gap: 14px; color: var(--subtle); font-size: 12px; font-weight: 300; letter-spacing: 0.04em; }
+    .loading::before { content: ''; width: 18px; height: 1px; background: var(--border); flex-shrink: 0; }
+
+    /* ─── About ─── */
+    .about-profile { display: flex; align-items: flex-start; gap: 36px; margin-bottom: 52px; }
+
+    .about-avatar {
+      width: 140px; height: 140px;
+      border-radius: 14px; overflow: hidden; flex-shrink: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-avatar-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--subtle); }
+    .about-avatar-placeholder svg { width: 28px; height: 28px; }
+    .about-avatar-placeholder span { font-size: 9.5px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .about-intro-name { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 400; letter-spacing: -0.02em; color: var(--text); margin-bottom: 4px; }
+    .about-intro-role { font-size: 13px; font-weight: 300; color: var(--muted); margin-bottom: 16px; }
+    .about-bio { font-size: 14px; font-weight: 300; line-height: 1.78; color: var(--muted); }
+    .about-bio strong { color: var(--text); font-weight: 400; }
+
+    .about-stats { display: flex; gap: 40px; margin-bottom: 48px; }
+    .stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 300; letter-spacing: -0.03em; color: var(--text); line-height: 1; margin-bottom: 3px; }
+    .stat-label { font-size: 10.5px; font-weight: 300; color: var(--subtle); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .specialties { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag { font-size: 11.5px; font-weight: 300; color: var(--muted); border: 1px solid var(--border); border-radius: 100px; padding: 6px 14px; letter-spacing: 0.03em; transition: border-color 200ms, color 200ms; }
+    .tag:hover { border-color: var(--subtle); color: var(--text); }
+
+    /* ─── Pricing ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 980px;
+    }
+
+    .price-card {
+      border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      transition: box-shadow 280ms cubic-bezier(.25,.46,.45,.94), transform 280ms cubic-bezier(.25,.46,.45,.94);
+    }
+    .price-card:hover { box-shadow: 0 20px 56px rgba(0,0,0,0.07); transform: translateY(-3px); }
+
+    .price-header { padding: 24px 26px 20px; border-bottom: 1px solid var(--border); }
+    .price-package { font-size: 9.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--subtle); margin-bottom: 12px; }
+    .price-amount { font-family: 'Space Grotesk', sans-serif; font-size: 40px; font-weight: 300; letter-spacing: -0.04em; color: var(--text); line-height: 1; }
+    .price-amount span { font-size: 16px; font-weight: 300; letter-spacing: 0; color: var(--muted); margin-left: 3px; }
+    .price-tagline { margin-top: 6px; font-size: 11.5px; font-weight: 300; color: var(--muted); }
+
+    .price-body { padding: 20px 26px 24px; flex: 1; }
+    .price-section-label { font-size: 9.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--subtle); margin-bottom: 12px; margin-top: 20px; }
+    .price-section-label:first-child { margin-top: 0; }
+    .price-choose { font-size: 12px; font-weight: 300; color: var(--muted); margin-bottom: 10px; }
+    .price-items { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .price-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; font-weight: 300; color: var(--text); line-height: 1.4; }
+    .price-item-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--subtle); flex-shrink: 0; margin-top: 7px; }
+
+    .price-addons { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+    .addon-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .addon-name { font-size: 12.5px; font-weight: 300; color: var(--muted); }
+    .addon-price { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 400; color: var(--text); white-space: nowrap; }
+
+    /* Featured (dark) card */
+    .price-card.featured { background: var(--text); border-color: var(--text); }
+    .price-card.featured .price-package { color: rgba(255,255,255,0.4); }
+    .price-card.featured .price-header { border-bottom-color: rgba(255,255,255,0.1); }
+    .price-card.featured .price-amount { color: #fff; }
+    .price-card.featured .price-amount span { color: rgba(255,255,255,0.45); }
+    .price-card.featured .price-tagline { color: rgba(255,255,255,0.5); }
+    .price-card.featured .price-item { color: rgba(255,255,255,0.75); }
+    .price-card.featured .price-item-dot { background: rgba(255,255,255,0.3); }
+    .price-card.featured .price-section-label { color: rgba(255,255,255,0.35); }
+    .price-card.featured .price-addons { border-top-color: rgba(255,255,255,0.1); }
+    .price-card.featured .addon-name { color: rgba(255,255,255,0.45); }
+    .price-card.featured .addon-price { color: rgba(255,255,255,0.75); }
+    .price-card.featured .price-footer { border-top-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+
+    .price-footer { padding: 16px 26px 20px; border-top: 1px solid var(--border); }
+
+    .price-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 11px;
+      background: var(--text); color: var(--bg);
+      border: none; border-radius: 8px;
+      font-family: 'Archivo', sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: 0.05em;
+      cursor: pointer; text-decoration: none;
+      transition: opacity 200ms, transform 180ms;
+    }
+    .price-cta:hover { opacity: 0.82; transform: translateY(-1px); }
+    .price-card.featured .price-cta { background: rgba(255,255,255,0.15); color: #fff; }
+    .price-card.featured .price-cta:hover { background: rgba(255,255,255,0.25); }
+
+    .pricing-note { margin-top: 14px; font-size: 11.5px; font-weight: 300; color: var(--subtle); max-width: 980px; }
+
+    /* ─── Gallery ─── */
+    .gallery {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10,10,9,0.96); z-index: 1000;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+    .gallery.open { display: flex; animation: fadeIn 0.2s ease both; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .gallery-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; flex-shrink: 0; }
+    .gallery-meta { display: flex; align-items: center; gap: 16px; }
+    .gallery-category { font-size: 11px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+    .gallery-type { font-size: 11px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+    .gallery-counter { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; }
+    .gallery-close { background: none; border: none; color: rgba(255,255,255,0.45); font-size: 18px; cursor: pointer; transition: color 150ms; padding: 4px 8px; font-family: 'Archivo', sans-serif; font-weight: 300; }
+    .gallery-close:hover { color: #fff; }
+
+    .gallery-stage { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 0 72px; min-height: 0; }
+
+    .gallery-media { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; animation: scaleIn 0.22s cubic-bezier(.25,.46,.45,.94) both; }
+    @keyframes scaleIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .gallery-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: rgba(255,255,255,0.15); width: min(320px, 55vw); aspect-ratio: 9/16; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; }
+    .gallery-placeholder.photo-ph { aspect-ratio: 4/3; width: min(500px, 68vw); }
+    .gallery-placeholder svg { width: 28px; height: 28px; }
+
+    .gallery-video-wrap { position: relative; max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center; }
+    .gallery-video-wrap video { max-width: 100%; max-height: calc(100vh - 200px); border-radius: 8px; display: block; }
+
+    .gallery-mute { position: absolute; bottom: 14px; right: 14px; background: rgba(0,0,0,0.55); border: none; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; transition: background 160ms; }
+    .gallery-mute:hover { background: rgba(0,0,0,0.8); }
+    .gallery-mute svg { width: 14px; height: 14px; }
+
+    .gallery-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: background 180ms, color 180ms; }
+    .gallery-btn:hover { background: rgba(255,255,255,0.16); color: #fff; }
+    .gallery-btn svg { width: 18px; height: 18px; }
+    .gallery-btn.prev { left: 16px; }
+    .gallery-btn.next { right: 16px; }
+    .gallery-btn:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+
+    .gallery-strip { display: flex; align-items: center; gap: 8px; padding: 16px 28px 24px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
+    .gallery-strip::-webkit-scrollbar { display: none; }
+
+    .gallery-thumb { width: 48px; height: 64px; border-radius: 6px; overflow: hidden; cursor: pointer; flex-shrink: 0; background: rgba(255,255,255,0.06); border: 1.5px solid transparent; transition: border-color 180ms, opacity 180ms; opacity: 0.4; display: flex; align-items: center; justify-content: center; }
+    .gallery-thumb.photo-thumb { width: 72px; height: 54px; }
+    .gallery-thumb img, .gallery-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-thumb.active { border-color: rgba(255,255,255,0.6); opacity: 1; }
+    .gallery-thumb:hover { opacity: 0.75; }
+    .gallery-thumb-ph { font-size: 9px; font-weight: 300; color: rgba(255,255,255,0.3); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 1100px) { .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 680px; } }
+    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; max-width: 400px; } }
+
+    @media (max-width: 780px) {
+      body { flex-direction: column; overflow: auto; height: auto; }
+      .sidebar { width: 100%; min-width: 0; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 24px 20px 20px; }
+      .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      .nav-sep { display: none; }
+      .main { height: auto; overflow-y: visible; }
+      .panel { padding: 36px 24px 56px; }
+      .panel-title { font-size: 30px; }
+      .sidebar-foot { margin-top: 16px; }
+      .about-profile { flex-direction: column; gap: 20px; }
+      .gallery-stage { padding: 0 52px; }
+      .about-stats { gap: 24px; flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reel-card, .photo-card, .price-card, .panel.active, .sidebar { animation: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ Sidebar ═══ -->
+<aside class="sidebar">
+  <div class="profile-top" id="profile-top" role="button" tabindex="0">
+    <div class="avatar-sm">
+      <!-- ✏️ Replace with your photo: <img src="media/profile.jpg" alt="Adeel"> -->
+      <div class="avatar-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+    <div>
+      <div class="profile-name">Syed Adeel Hassan</div>
+      <div class="profile-role">Photographer &amp; Videographer</div>
+    </div>
+  </div>
+
+  <ul class="nav" id="nav">
+    <li><a class="nav-link" data-target="about" href="#">About</a></li>
+    <div class="nav-sep"></div>
+    <li><a class="nav-link active" data-target="fashion"    href="#">Fashion</a></li>
+    <li><a class="nav-link"        data-target="realestate" href="#">Real-estate</a></li>
+    <li><a class="nav-link"        data-target="personal"   href="#">Personal Brand</a></li>
+    <li><a class="nav-link"        data-target="fitness"    href="#">Fitness</a></li>
+    <li><a class="nav-link"        data-target="automotive" href="#">Automotive</a></li>
+    <div class="nav-sep"></div>
+    <li><a class="nav-link" data-target="pricing" href="#">Pricing</a></li>
+  </ul>
+
+  <div class="sidebar-foot">
+    <button class="connect-btn" id="connect-toggle" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Connect
+    </button>
+    <div class="connect-options" id="connect-options">
+      <a class="connect-opt" href="https://wa.me/971553358446?text=Hi%20Adeel%2C%20I%27d%20love%20to%20discuss%20a%20project." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a class="connect-opt" href="mailto:adeel.hasan@hotmail.com?subject=Project%20Enquiry" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        adeel.hasan@hotmail.com
+      </a>
+      <a class="connect-opt" href="https://instagram.com/syedadeelhasan" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        @syedadeelhasan
+      </a>
+    </div>
+    <div class="foot-copy">© 2026 Syed Adeel Hassan</div>
+  </div>
+</aside>
+
+<!-- ═══ Main ═══ -->
+<main class="main" id="main">
+
+  <!-- About -->
+  <div class="panel" id="about">
+    <div class="panel-head">
+      <p class="eyebrow">Who Am I?</p>
+      <h1 class="panel-title">I Shoot What<br>Moves Me.</h1>
+    </div>
+    <div class="about-profile">
+      <div class="about-avatar">
+        <!-- ✏️ Replace with: <img src="media/profile.jpg" alt="Syed Adeel Hassan"> -->
+        <div class="about-avatar-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Your photo</span>
+        </div>
+      </div>
+      <div>
+        <div class="about-intro-name">Syed Adeel Hassan</div>
+        <div class="about-intro-role">Photographer &amp; Videographer — Dubai</div>
+        <p class="about-bio">
+          With <strong>over a decade</strong> behind the lens, I turn fitness intensity and automotive cool into stories that move people. Every frame is built on <strong>meticulous attention to detail</strong>, precise lighting, and a collaborative process — from concept through final delivery.<br><br>
+          I bring the same obsessive energy to every project, whether it's capturing sweat on a barbell or chrome under golden light.
+        </p>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div><div class="stat-num">10+</div><div class="stat-label">Years experience</div></div>
+      <div><div class="stat-num">5</div><div class="stat-label">Content verticals</div></div>
+      <div><div class="stat-num">∞</div><div class="stat-label">Frames per story</div></div>
+    </div>
+    <div class="block">
+      <div class="block-head"><span class="block-label">Specialties</span><div class="block-rule"></div></div>
+      <div class="specialties">
+        <span class="tag">Fitness Photography</span>
+        <span class="tag">Automotive</span>
+        <span class="tag">Fashion</span>
+        <span class="tag">Real-estate</span>
+        <span class="tag">Personal Brand</span>
+        <span class="tag">Reels &amp; Short-form</span>
+        <span class="tag">Podcast Recording</span>
+        <span class="tag">Post-production</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category panels — content injected by JS from manifest.json -->
+  <div class="panel active" id="fashion"    data-cat="Fashion"       data-label="Category 01" data-sub="Editorial &amp; commercial fashion content"></div>
+  <div class="panel"        id="realestate" data-cat="Real-estate"   data-label="Category 02" data-sub="Spaces that sell themselves"></div>
+  <div class="panel"        id="personal"   data-cat="Personal Brand" data-label="Category 03" data-sub="Your story, your frame"></div>
+  <div class="panel"        id="fitness"    data-cat="Fitness"        data-label="Category 04" data-sub="Raw energy, precise light"></div>
+  <div class="panel"        id="automotive" data-cat="Automotive"     data-label="Category 05" data-sub="Chrome, speed &amp; light"></div>
+
+  <!-- Pricing -->
+  <div class="panel" id="pricing">
+    <div class="panel-head">
+      <p class="eyebrow">Investment</p>
+      <h1 class="panel-title">Pricing</h1>
+      <p class="panel-sub">Transparent packages — no surprises</p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- 500 AED -->
+      <div class="price-card">
+        <div class="price-header">
+          <div class="price-package">Photo / Video Coverage</div>
+          <div class="price-amount">500 <span>AED</span></div>
+          <div class="price-tagline">2 hours · RAW delivery</div>
+        </div>
+        <div class="price-body">
+          <div class="price-section-label">Choose within 2 hours</div>
+          <p class="price-choose">Any one or mix — within the time limit:</p>
+          <ul class="price-items">
+            <li class="price-item"><span class="price-item-dot"></span>Photography</li>
+            <li class="price-item"><span class="price-item-dot"></span>Videography</li>
+            <li class="price-item"><span class="price-item-dot"></span>Podcast Recording</li>
+            <li class="price-item"><span class="price-item-dot"></span>B-roll / Lifestyle Shots</li>
+          </ul>
+          <div class="price-section-label">Deliverables</div>
+          <ul class="price-items">
+            <li class="price-item"><span class="price-item-dot"></span>All content in RAW (unedited) format</li>
+          </ul>
+          <div class="price-addons">
+            <div class="addon-row"><span class="addon-name">Extra Hour</span><span class="addon-price">300 AED / hr</span></div>
+            <div class="addon-row"><span class="addon-name">Editing — 30 sec reel</span><span class="addon-price">100 AED each</span></div>
+          </div>
+        </div>
+        <div class="price-footer">
+          <a class="price-cta" href="https://wa.me/971553358446?text=Hi%20Adeel%2C%20I%27d%20like%20to%20book%20the%20500%20AED%20package." target="_blank" rel="noopener">Book on WhatsApp</a>
+        </div>
+      </div>
+
+      <!-- Content Partner (featured) -->
+      <div class="price-card featured">
+        <div class="price-header">
+          <div class="price-package">Content Partner Package</div>
+          <div class="price-amount">3,999 <span>AED/mo</span></div>
+          <div class="price-tagline">Best value for consistent creators</div>
+        </div>
+        <div class="price-body">
+          <div class="price-section-label">What's included</div>
+          <ul class="price-items">
+            <li class="price-item"><span class="price-item-dot"></span>4 content days / month (2 hrs each)</li>
+            <li class="price-item"><span class="price-item-dot"></span>Photography + Videography coverage</li>
+            <li class="price-item"><span class="price-item-dot"></span>12 professionally edited reels</li>
+            <li class="price-item"><span class="price-item-dot"></span>Unlimited RAW content delivery</li>
+            <li class="price-item"><span class="price-item-dot"></span>Content planning support</li>
+            <li class="price-item"><span class="price-item-dot"></span>Priority scheduling</li>
+          </ul>
+          <div class="price-addons">
+            <div class="addon-row"><span class="addon-name">Extra reels</span><span class="addon-price">75 AED each</span></div>
+            <div class="addon-row"><span class="addon-name">Extra coverage</span><span class="addon-price">225 AED / hr</span></div>
+          </div>
+        </div>
+        <div class="price-footer">
+          <a class="price-cta" href="https://wa.me/971553358446?text=Hi%20Adeel%2C%20I%27m%20interested%20in%20the%20Content%20Partner%20Package." target="_blank" rel="noopener">Get Started</a>
+        </div>
+      </div>
+
+      <!-- Custom Quote -->
+      <div class="price-card">
+        <div class="price-header">
+          <div class="price-package">Custom Project</div>
+          <div class="price-amount">Let's <span>talk</span></div>
+          <div class="price-tagline">Tailored to your scope</div>
+        </div>
+        <div class="price-body">
+          <div class="price-section-label">What's included</div>
+          <ul class="price-items">
+            <li class="price-item"><span class="price-item-dot"></span>Multi-day shoots</li>
+            <li class="price-item"><span class="price-item-dot"></span>Campaign planning &amp; direction</li>
+            <li class="price-item"><span class="price-item-dot"></span>Branded content packages</li>
+            <li class="price-item"><span class="price-item-dot"></span>Full post-production</li>
+            <li class="price-item"><span class="price-item-dot"></span>Retainer &amp; ongoing work</li>
+          </ul>
+          <div class="price-addons">
+            <div class="addon-row"><span class="addon-name">Response time</span><span class="addon-price">Within 24 hrs</span></div>
+          </div>
+        </div>
+        <div class="price-footer">
+          <a class="price-cta" href="https://wa.me/971553358446?text=Hi%20Adeel%2C%20I%27d%20like%20to%20discuss%20a%20custom%20project." target="_blank" rel="noopener">Get a Custom Quote</a>
+        </div>
+      </div>
+
+    </div>
+    <p class="pricing-note">All prices in AED. Custom scopes welcomed — reach out to discuss.</p>
+  </div>
+
+</main>
+
+<!-- ═══ Gallery ═══ -->
+<div class="gallery" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-header">
+    <div class="gallery-meta">
+      <span class="gallery-category" id="g-cat"></span>
+      <span class="gallery-type" id="g-type"></span>
+    </div>
+    <span class="gallery-counter" id="g-counter"></span>
+    <button class="gallery-close" id="g-close">&#x2715;</button>
+  </div>
+  <div class="gallery-stage">
+    <button class="gallery-btn prev" id="g-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,18 9,12 15,6"/></svg></button>
+    <div id="g-content"></div>
+    <button class="gallery-btn next" id="g-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9,6 15,12 9,18"/></svg></button>
+  </div>
+  <div class="gallery-strip" id="g-strip"></div>
+</div>
+
+<script>
+// ═══ 1. Load manifest and build category panels ═══
+const CATEGORIES = [
+  { id: 'fashion',    cat: 'Fashion',       label: 'Category 01', sub: 'Editorial &amp; commercial fashion content' },
+  { id: 'realestate', cat: 'Real-estate',   label: 'Category 02', sub: 'Spaces that sell themselves' },
+  { id: 'personal',  cat: 'Personal Brand', label: 'Category 03', sub: 'Your story, your frame' },
+  { id: 'fitness',   cat: 'Fitness',        label: 'Category 04', sub: 'Raw energy, precise light' },
+  { id: 'automotive',cat: 'Automotive',     label: 'Category 05', sub: 'Chrome, speed &amp; light' },
+];
+
+function reelCardHTML(src, cat, idx) {
+  if (src) {
+    return `<div class="reel-card" data-cat="${cat}" data-type="reel" data-idx="${idx}" data-src="${src}">
+      <video src="${src}" loop muted playsinline preload="metadata"></video>
+      <div class="card-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg></div></div>
+    </div>`;
+  }
+  return `<div class="reel-card" data-cat="${cat}" data-type="reel" data-idx="${idx}">
+    <div class="reel-placeholder"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg></div></div>
+  </div>`;
+}
+
+function photoCardHTML(src, cat, idx) {
+  if (src) {
+    return `<div class="photo-card" data-cat="${cat}" data-type="photo" data-idx="${idx}" data-src="${src}">
+      <img src="${src}" alt="${cat} photo ${idx + 1}" loading="lazy">
+    </div>`;
+  }
+  return `<div class="photo-card" data-cat="${cat}" data-type="photo" data-idx="${idx}">
+    <div class="photo-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+  </div>`;
+}
+
+function buildPanel(panelEl, catData, reels, photos) {
+  const reelsHTML = reels.length
+    ? `<div class="reels-grid">${reels.map((src, i) => reelCardHTML(src, catData.cat, i)).join('')}</div>`
+    : `<p class="empty">No reels yet</p>`;
+
+  const photosHTML = photos.length
+    ? `<div class="photos-grid">${photos.map((src, i) => photoCardHTML(src, catData.cat, i)).join('')}</div>`
+    : `<p class="empty">No photos yet</p>`;
+
+  panelEl.innerHTML = `
+    <div class="panel-head">
+      <p class="eyebrow">${catData.label}</p>
+      <h1 class="panel-title">${catData.cat}</h1>
+      <p class="panel-sub">${catData.sub}</p>
+    </div>
+    <div class="block">
+      <div class="block-head"><span class="block-label">Reels</span><div class="block-rule"></div></div>
+      ${reelsHTML}
+    </div>
+    <div class="block">
+      <div class="block-head"><span class="block-label">Photos</span><div class="block-rule"></div></div>
+      ${photosHTML}
+    </div>`;
+
+  // Bind gallery clicks after injecting
+  panelEl.querySelectorAll('.reel-card').forEach(card => {
+    card.addEventListener('click', () => openGallery(card.dataset.cat, 'reel', parseInt(card.dataset.idx)));
+  });
+  panelEl.querySelectorAll('.photo-card').forEach(card => {
+    card.addEventListener('click', () => openGallery(card.dataset.cat, 'photo', parseInt(card.dataset.idx)));
+  });
+}
+
+async function loadManifest() {
+  let manifest = {};
+  try {
+    const res = await fetch('manifest.json');
+    if (res.ok) manifest = await res.json();
+  } catch (e) {
+    // No manifest yet — show placeholders
+  }
+
+  CATEGORIES.forEach(catData => {
+    const panelEl = document.getElementById(catData.id);
+    if (!panelEl) return;
+    const data   = manifest[catData.id] || {};
+    const reels  = data.reels  || [];
+    const photos = data.photos || [];
+    buildPanel(panelEl, catData, reels, photos);
+  });
+}
+
+loadManifest();
+
+// ═══ 2. Navigation ═══
+function activatePanel(target) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const link  = document.querySelector(`.nav-link[data-target="${target}"]`);
+  const panel = document.getElementById(target);
+  if (link)  link.classList.add('active');
+  if (panel) { panel.classList.add('active'); document.getElementById('main').scrollTop = 0; }
+}
+
+document.getElementById('nav').addEventListener('click', e => {
+  const link = e.target.closest('.nav-link');
+  if (!link) return;
+  e.preventDefault();
+  activatePanel(link.dataset.target);
+});
+
+const profileTop = document.getElementById('profile-top');
+profileTop.addEventListener('click', () => activatePanel('about'));
+profileTop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activatePanel('about'); } });
+
+// ═══ 3. Connect toggle ═══
+const toggle   = document.getElementById('connect-toggle');
+const connOpts = document.getElementById('connect-options');
+toggle.addEventListener('click', () => {
+  const open = connOpts.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', open);
+});
+document.addEventListener('click', e => {
+  if (!toggle.contains(e.target) && !connOpts.contains(e.target)) {
+    connOpts.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+});
+
+// ═══ 4. Gallery ═══
+const gallery  = document.getElementById('gallery');
+const gCat     = document.getElementById('g-cat');
+const gType    = document.getElementById('g-type');
+const gCounter = document.getElementById('g-counter');
+const gContent = document.getElementById('g-content');
+const gStrip   = document.getElementById('g-strip');
+const gPrev    = document.getElementById('g-prev');
+const gNext    = document.getElementById('g-next');
+
+let galleryItems   = [];
+let galleryCurrent = 0;
+let galleryMuted   = true;
+
+function getItems(cat, type) {
+  return Array.from(document.querySelectorAll(`[data-cat="${cat}"][data-type="${type}"]`));
+}
+
+function muteIcon()   { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`; }
+function unmuteIcon() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`; }
+
+function buildThumb(card, idx, type) {
+  const thumb = document.createElement('div');
+  thumb.className = 'gallery-thumb' + (type === 'photo' ? ' photo-thumb' : '');
+  thumb.dataset.idx = idx;
+  const src = card.dataset.src;
+  if (src) {
+    if (type === 'reel') {
+      const v = document.createElement('video'); v.src = src; v.muted = true; thumb.appendChild(v);
+    } else {
+      const i = document.createElement('img'); i.src = src; i.alt = ''; thumb.appendChild(i);
+    }
+  } else {
+    const n = document.createElement('span'); n.className = 'gallery-thumb-ph'; n.textContent = String(idx + 1).padStart(2, '0'); thumb.appendChild(n);
+  }
+  thumb.addEventListener('click', () => showItem(idx));
+  return thumb;
+}
+
+function showItem(idx) {
+  galleryCurrent = idx;
+  const card  = galleryItems[idx];
+  const type  = card.dataset.type;
+  const src   = card.dataset.src;
+  const total = galleryItems.length;
+
+  gCounter.textContent = `${idx + 1} / ${total}`;
+  gPrev.disabled = (idx === 0);
+  gNext.disabled = (idx === total - 1);
+
+  gStrip.querySelectorAll('.gallery-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+  gStrip.children[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+  gContent.innerHTML = '';
+
+  if (src && type === 'reel') {
+    const wrap = document.createElement('div'); wrap.className = 'gallery-video-wrap';
+    const v = document.createElement('video'); v.src = src; v.autoplay = true; v.loop = true; v.muted = galleryMuted; v.playsInline = true;
+    wrap.appendChild(v);
+    const muteBtn = document.createElement('button'); muteBtn.className = 'gallery-mute'; muteBtn.innerHTML = galleryMuted ? muteIcon() : unmuteIcon();
+    muteBtn.addEventListener('click', () => { galleryMuted = !galleryMuted; v.muted = galleryMuted; muteBtn.innerHTML = galleryMuted ? muteIcon() : unmuteIcon(); });
+    wrap.appendChild(muteBtn);
+    gContent.appendChild(wrap);
+  } else if (src && type === 'photo') {
+    const img = document.createElement('img'); img.src = src; img.className = 'gallery-media'; img.alt = '';
+    gContent.appendChild(img);
+  } else {
+    const ph = document.createElement('div');
+    ph.className = type === 'reel' ? 'gallery-placeholder' : 'gallery-placeholder photo-ph';
+    ph.innerHTML = type === 'reel'
+      ? `<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" opacity="0.3"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>`;
+    gContent.appendChild(ph);
+  }
+}
+
+function openGallery(cat, type, startIdx) {
+  galleryItems = getItems(cat, type);
+  if (!galleryItems.length) return;
+  gCat.textContent  = cat;
+  gType.textContent = type === 'reel' ? '· Reels' : '· Photos';
+  gStrip.innerHTML  = '';
+  galleryItems.forEach((card, i) => gStrip.appendChild(buildThumb(card, i, type)));
+  gallery.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showItem(startIdx);
+}
+
+function closeGallery() {
+  gallery.classList.remove('open');
+  document.body.style.overflow = '';
+  gContent.innerHTML = '';
+}
+
+document.getElementById('g-close').addEventListener('click', closeGallery);
+gallery.addEventListener('click', e => { if (e.target === gallery) closeGallery(); });
+gPrev.addEventListener('click', () => { if (galleryCurrent > 0) showItem(galleryCurrent - 1); });
+gNext.addEventListener('click', () => { if (galleryCurrent < galleryItems.length - 1) showItem(galleryCurrent + 1); });
+
+document.addEventListener('keydown', e => {
+  if (!gallery.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeGallery();
+  if (e.key === 'ArrowLeft')  { if (galleryCurrent > 0) showItem(galleryCurrent - 1); }
+  if (e.key === 'ArrowRight') { if (galleryCurrent < galleryItems.length - 1) showItem(galleryCurrent + 1); }
+});
+
+let touchStartX = 0;
+gallery.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+gallery.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) < 40) return;
+  if (dx < 0 && galleryCurrent < galleryItems.length - 1) showItem(galleryCurrent + 1);
+  if (dx > 0 && galleryCurrent > 0) showItem(galleryCurrent - 1);
+});
+</script>
+</body>
+</html>
