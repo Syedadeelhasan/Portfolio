@@ -200,15 +200,13 @@
     .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 
     .photo-card {
-      aspect-ratio: 4/3;
       background: var(--surface);
       border-radius: 10px; overflow: hidden; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
       position: relative;
       transition: transform 280ms cubic-bezier(.25,.46,.45,.94), box-shadow 280ms cubic-bezier(.25,.46,.45,.94);
     }
     .photo-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 48px rgba(0,0,0,0.08); }
-    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+    .photo-card img { width: 100%; height: auto; display: block; }
 
     .photo-placeholder {
       width: 100%; height: 100%;
