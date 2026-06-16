@@ -16,7 +16,9 @@
     "photos": []
   },
   "automotive": {
-    "reels": [],
+    "reels": [
+      "media/automotive/reels/Automotive001.mp4"
+    ],
     "photos": []
   }
 }
