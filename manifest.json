@@ -24,7 +24,14 @@
       "media/fitness/reels/Fitness 2.mp4",
       "media/fitness/reels/Fitness 4.mp4"
     ],
-    "photos": []
+    "photos": [
+      "media/fitness/photos/thumbnail_DSC01025-Edit.jpg",
+      "media/fitness/photos/thumbnail_DSC02923_Original.jpg",
+      "media/fitness/photos/thumbnail_DSC09299-Edit.jpg",
+      "media/fitness/photos/thumbnail_DSC09436-Edit.jpg",
+      "media/fitness/photos/thumbnail_DSC09849-Edit.jpg",
+      "media/fitness/photos/thumbnail_IMG_7271.jpg"
+    ]
   },
   "automotive": {
     "reels": [
