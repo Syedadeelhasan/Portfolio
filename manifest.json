@@ -6,7 +6,9 @@
       "media/fashion/reels/Fashion 3.mp4",
       "media/fashion/reels/Fashion 4.mp4",
       "media/fashion/reels/Fashion 5.mp4",
-      "media/fashion/reels/Fashion 6.mp4"
+      "media/fashion/reels/Fashion 6.mp4",
+      "media/fashion/reels/Fashion 7.mp4",
+      "media/fashion/reels/Fashion 8.mp4"
     ],
     "photos": []
   },
@@ -21,7 +23,15 @@
     "photos": []
   },
   "personal": {
-    "reels": [],
+    "reels": [
+      "media/personal/reels/PB 1.mp4",
+      "media/personal/reels/PB 2.mp4",
+      "media/personal/reels/PB 3.mp4",
+      "media/personal/reels/PB 4.mp4",
+      "media/personal/reels/PB 5.mp4",
+      "media/personal/reels/PB 6.mp4",
+      "media/personal/reels/PB 7.mp4"
+    ],
     "photos": []
   },
   "fitness": {
