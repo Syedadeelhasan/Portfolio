@@ -1,6 +1,13 @@
 {
   "fashion": {
-    "reels": [],
+    "reels": [
+      "media/fashion/reels/Fashion 1.mp4",
+      "media/fashion/reels/Fashion 2.mp4",
+      "media/fashion/reels/Fashion 3.mp4",
+      "media/fashion/reels/Fashion 4.mp4",
+      "media/fashion/reels/Fashion 5.mp4",
+      "media/fashion/reels/Fashion 6.mp4"
+    ],
     "photos": []
   },
   "realestate": {
