@@ -905,9 +905,12 @@ function buildPanel(panelEl, catData, reels, photos) {
     ? `<div class="reels-grid">${reels.map((src, i) => reelCardHTML(src, catData.cat, i)).join('')}</div>`
     : `<p class="empty">No reels yet</p>`;
 
-  const photosHTML = photos.length
-    ? `<div class="photos-grid">${photos.map((src, i) => photoCardHTML(src, catData.cat, i)).join('')}</div>`
-    : `<p class="empty">No photos yet</p>`;
+  const photosBlock = photos.length
+    ? `<div class="block">
+      <div class="block-head"><span class="block-label">Photos</span><div class="block-rule"></div></div>
+      <div class="photos-grid">${photos.map((src, i) => photoCardHTML(src, catData.cat, i)).join('')}</div>
+    </div>`
+    : '';
 
   panelEl.innerHTML = `
     <div class="panel-head">
@@ -919,10 +922,7 @@ function buildPanel(panelEl, catData, reels, photos) {
       <div class="block-head"><span class="block-label">Reels</span><div class="block-rule"></div></div>
       ${reelsHTML}
     </div>
-    <div class="block">
-      <div class="block-head"><span class="block-label">Photos</span><div class="block-rule"></div></div>
-      ${photosHTML}
-    </div>`;
+    ${photosBlock}`;
 
   // Load first frame of each reel so thumbnails show on mobile
   panelEl.querySelectorAll('.reel-card video').forEach(v => {
