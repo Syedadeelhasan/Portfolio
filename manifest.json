@@ -16,7 +16,13 @@
     "photos": []
   },
   "automotive": {
-    "reels": [],
+    "reels": [
+      "media/automotive/reels/Ae86.mp4",
+      "media/automotive/reels/Afsar.mp4",
+      "media/automotive/reels/Alba 1.mp4",
+      "media/automotive/reels/Alba 2.mp4",
+      "media/automotive/reels/Alba 3.mp4"
+    ],
     "photos": [
       "media/automotive/photos/DSC08071.jpg",
       "media/automotive/photos/DSC_7361-Edit.JPG",
