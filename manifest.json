@@ -19,7 +19,9 @@
     "photos": []
   },
   "fitness": {
-    "reels": [],
+    "reels": [
+      "media/fitness/reels/Fitness 1.mp4"
+    ],
     "photos": []
   },
   "automotive": {
