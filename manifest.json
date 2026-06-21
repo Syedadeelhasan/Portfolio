@@ -11,7 +11,13 @@
     "photos": []
   },
   "realestate": {
-    "reels": [],
+    "reels": [
+      "media/realestate/reels/Realestate 1.mp4",
+      "media/realestate/reels/Realestate 2.mp4",
+      "media/realestate/reels/Realestate 3.mp4",
+      "media/realestate/reels/Realestate 4.mp4",
+      "media/realestate/reels/Realestate 5.mp4"
+    ],
     "photos": []
   },
   "personal": {
