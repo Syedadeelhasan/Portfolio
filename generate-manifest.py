@@ -37,6 +37,6 @@ for key, folder in CATEGORIES.items():
 with open("manifest.json", "w") as f:
     json.dump(manifest, f, indent=2)
 
-print("✅ manifest.json generated:")
+print("manifest.json generated:")
 for key, val in manifest.items():
     print(f"  {key}: {len(val['reels'])} reels, {len(val['photos'])} photos")
