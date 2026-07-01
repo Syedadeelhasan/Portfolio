@@ -1,0 +1,42 @@
+import os
+import json
+
+# Which folders map to which category key
+CATEGORIES = {
+    "fashion":    "media/fashion",
+    "realestate": "media/realestate",
+    "personal":   "media/personal",
+    "fitness":    "media/fitness",
+    "automotive": "media/automotive",
+}
+
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+VIDEO_EXTS = {".mp4", ".mov", ".webm"}
+
+manifest = {}
+
+for key, folder in CATEGORIES.items():
+    reels  = []
+    photos = []
+
+    reels_dir  = os.path.join(folder, "reels")
+    photos_dir = os.path.join(folder, "photos")
+
+    if os.path.isdir(reels_dir):
+        for f in sorted(os.listdir(reels_dir)):
+            if os.path.splitext(f)[1].lower() in VIDEO_EXTS:
+                reels.append(f"{reels_dir}/{f}")
+
+    if os.path.isdir(photos_dir):
+        for f in sorted(os.listdir(photos_dir)):
+            if os.path.splitext(f)[1].lower() in IMAGE_EXTS:
+                photos.append(f"{photos_dir}/{f}")
+
+    manifest[key] = {"reels": reels, "photos": photos}
+
+with open("manifest.json", "w") as f:
+    json.dump(manifest, f, indent=2)
+
+print("manifest.json generated:")
+for key, val in manifest.items():
+    print(f"  {key}: {len(val['reels'])} reels, {len(val['photos'])} photos")

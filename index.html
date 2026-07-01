@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelo — Chat-First AI CRM for High-Value Brokers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#F3EDE3;--cream-2:#EBE4D8;--cream-3:#DDD4C5;--card:#FAF8F3;
+  --ink:#0D0B07;--ink-2:#2C2519;--ink-3:#5A4E3E;--ink-4:#9A8A76;
+  --em:#1C3C2A;--em-2:#2E5C42;--em-dim:rgba(28,60,42,.08);--em-glow:rgba(28,60,42,.2);
+  --gold:#B8880C;--gold-2:#D4A832;--gold-3:#E8C870;--gold-dim:rgba(184,136,12,.1);--gold-glow:rgba(184,136,12,.3);
+  --dark:#081812;--dark-2:#0D2119;--dark-3:#142B20;--dark-4:#1C3628;
+  --d-border:rgba(184,136,12,.12);--d-border-hi:rgba(184,136,12,.28);
+  --sans:'Outfit',system-ui,sans-serif;--serif:'DM Serif Display',Georgia,serif;
+  --spring:cubic-bezier(.22,1,.36,1);--expo:cubic-bezier(.16,1,.3,1);
+}
+html{cursor:none;scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);overflow-x:hidden;line-height:1.65}
+button{cursor:none;font-family:var(--sans)}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* CURSOR */
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s var(--spring),height .25s var(--spring);will-change:left,top}
+#cursor-dot{position:fixed;width:6px;height:6px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--gold-glow);will-change:left,top}
+body.cursor-hover #cursor-ring{width:56px;height:56px}
+
+/* NAV */
+.nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:1280px;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:10px 10px 10px 24px;border-radius:100px;backdrop-filter:blur(20px) saturate(180%);transition:all .3s ease;background:rgba(243,237,227,.82);border:1px solid rgba(13,11,7,.1)}
+.nav.dark-nav{background:rgba(8,24,18,.88);border-color:rgba(184,136,12,.15)}
+.nav-logo{font-family:var(--sans);font-weight:800;font-size:1.1rem;color:var(--ink);display:flex;align-items:center;gap:8px;letter-spacing:-.02em}
+.nav.dark-nav .nav-logo{color:var(--cream)}
+.nav-dot{width:7px;height:7px;background:var(--gold);border-radius:50%;display:inline-block;animation:pulse-dot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 var(--gold-glow)}50%{box-shadow:0 0 0 5px transparent}}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-family:var(--sans);font-weight:500;font-size:.9rem;color:var(--ink-3);transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav.dark-nav .nav-links a{color:rgba(235,228,216,.6)}
+.nav.dark-nav .nav-links a:hover{color:var(--cream)}
+.nav-cta{display:flex;gap:10px;align-items:center}
+.btn-nav-ghost{padding:8px 18px;border:1px solid rgba(13,11,7,.18);border-radius:100px;font-size:.85rem;font-weight:500;color:var(--ink-3);transition:all .2s;cursor:none}
+.btn-nav-ghost:hover{border-color:rgba(13,11,7,.4);color:var(--ink)}
+.nav.dark-nav .btn-nav-ghost{border-color:rgba(235,228,216,.2);color:rgba(235,228,216,.7)}
+.nav.dark-nav .btn-nav-ghost:hover{border-color:rgba(235,228,216,.5);color:var(--cream)}
+.btn-nav{padding:9px 20px;background:var(--gold);color:var(--dark);border-radius:100px;font-size:.85rem;font-weight:700;border:none;transition:all .2s;letter-spacing:.01em;display:inline-flex;align-items:center}
+.btn-nav:hover{background:var(--gold-2)}
+
+/* HERO */
+.hero{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1280px;margin:0 auto;padding:110px 80px 80px}
+.hero-right{display:flex;justify-content:center;align-items:center;position:relative;height:600px;will-change:transform}
+.hero-left{display:flex;flex-direction:column;gap:24px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid rgba(184,136,12,.2);border-radius:100px;padding:6px 14px 6px 10px;font-size:.72rem;font-weight:600;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;width:fit-content}
+.eyebrow-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse-dot 1.8s ease-in-out infinite;flex-shrink:0}
+.hero-h1{font-family:var(--serif);font-size:clamp(3.2rem,5.5vw,5.8rem);line-height:.96;letter-spacing:-.02em}
+.hero-h1 .line-1,.hero-h1 .line-2,.hero-h1 .line-3{display:block;opacity:0;transform:translateY(30px);transition:opacity .7s var(--spring),transform .7s var(--spring);will-change:transform,opacity}
+.hero-h1 .line-1.on,.hero-h1 .line-2.on,.hero-h1 .line-3.on{opacity:1;transform:translateY(0)}
+.hero-h1 em{font-style:italic;color:var(--ink-3)}
+.hero-h1 .em-word{color:var(--em);text-shadow:0 0 40px var(--em-glow)}
+.hero-sub{font-size:1.05rem;color:var(--ink-3);line-height:1.7;max-width:480px}
+.hero-stats{display:flex;align-items:center}
+.stat-item{display:flex;flex-direction:column;gap:3px;padding:0 20px}
+.stat-item:first-child{padding-left:0}
+.stat-val{font-family:var(--sans);font-weight:900;font-size:1.55rem;color:var(--ink);letter-spacing:-.04em;line-height:1;white-space:nowrap}
+.stat-label{font-size:.73rem;color:var(--ink-4);font-weight:500;letter-spacing:.04em;white-space:nowrap}
+.stat-div{width:1px;height:36px;background:rgba(13,11,7,.12);flex-shrink:0}
+.hero-cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-hero-gold{padding:14px 28px;background:var(--gold);color:var(--dark);border-radius:100px;font-size:.95rem;font-weight:700;border:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s var(--spring);letter-spacing:.01em;cursor:none;text-decoration:none}
+.btn-hero-gold:hover{background:var(--gold-2);box-shadow:0 8px 32px var(--gold-glow)}
+.btn-hero-ghost{padding:14px 28px;border:1px solid rgba(13,11,7,.2);border-radius:100px;font-size:.95rem;font-weight:500;color:var(--ink-3);display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-hero-ghost:hover{border-color:rgba(13,11,7,.5);color:var(--ink)}
+
+/* HERO RIGHT / PHONE */
+.phone-wrap{position:relative;width:260px;animation:phoneFloat 7s ease-in-out infinite;will-change:transform,opacity}
+@keyframes phoneFloat{0%,100%{transform:translateY(0) rotate(-1deg)}33%{transform:translateY(-12px) rotate(.5deg)}66%{transform:translateY(-6px) rotate(-1.5deg)}}
+.phone{width:260px;background:var(--dark-2);border:2px solid rgba(184,136,12,.35);border-radius:38px;box-shadow:0 0 0 8px rgba(184,136,12,.06),0 40px 80px rgba(0,0,0,.55),0 0 60px rgba(184,136,12,.12);overflow:hidden}
+.phone-notch{width:90px;height:22px;background:var(--dark);border-radius:0 0 14px 14px;margin:0 auto}
+.phone-screen{padding:14px 12px 20px;display:flex;flex-direction:column;gap:10px;min-height:460px}
+.chat-label{font-size:.6rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-align:center;margin-bottom:4px;opacity:.7}
+.msg{max-width:84%;border-radius:16px;padding:9px 12px;font-size:.72rem;line-height:1.5;opacity:0;animation:msgIn .5s var(--spring) forwards}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg-ai{background:rgba(255,255,255,.07);color:rgba(235,228,216,.9);border-radius:16px 16px 16px 4px}
+.msg-user{background:rgba(184,136,12,.18);color:var(--gold-3);align-self:flex-end;border-radius:16px 16px 4px 16px}
+.msg-voice{background:rgba(184,136,12,.12);border:1px solid rgba(184,136,12,.2);border-radius:16px 16px 16px 4px;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.msg-voice.msg-user{align-self:flex-end;border-radius:16px 16px 4px 16px}
+.waveform{display:flex;align-items:center;gap:2px;height:18px}
+.wbar{width:2.5px;background:var(--gold);border-radius:2px;animation:vwave 1.2s ease-in-out infinite}
+.wbar:nth-child(1){height:4px;animation-delay:0s}.wbar:nth-child(2){height:10px;animation-delay:.1s}.wbar:nth-child(3){height:16px;animation-delay:.2s}.wbar:nth-child(4){height:10px;animation-delay:.3s}.wbar:nth-child(5){height:6px;animation-delay:.4s}.wbar:nth-child(6){height:14px;animation-delay:.5s}
+@keyframes vwave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
+.msg-voice-text{font-size:.65rem;color:rgba(184,136,12,.8)}
+.typing-dots{display:flex;gap:4px;padding:8px 12px;background:rgba(255,255,255,.07);border-radius:16px 16px 16px 4px;width:fit-content}
+.dot-t{width:6px;height:6px;background:rgba(235,228,216,.4);border-radius:50%;animation:tdot .9s ease-in-out infinite}
+.dot-t:nth-child(2){animation-delay:.18s}.dot-t:nth-child(3){animation-delay:.36s}
+@keyframes tdot{0%,80%,100%{transform:scale(.8);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+.msg-1{animation-delay:.4s}.msg-2{animation-delay:1.5s}.msg-3{animation-delay:2.7s}.msg-4{animation-delay:3.6s}.msg-5{animation-delay:4.4s}
+
+/* CHIPS */
+.chip{position:absolute;border-radius:100px;padding:8px 14px;font-size:.72rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.chip-icon{width:14px;height:14px;flex-shrink:0}
+.chip-deal{top:60px;right:-80px;background:var(--gold);color:var(--dark);animation:float1 4s ease-in-out infinite}
+.chip-client{top:200px;left:-90px;background:var(--card);color:var(--ink-2);border:1px solid rgba(13,11,7,.08);animation:float2 5s ease-in-out infinite 1s}
+.chip-pipeline{bottom:100px;right:-70px;background:var(--dark-3);color:var(--gold);border:1px solid var(--d-border-hi);animation:float3 4.5s ease-in-out infinite 2s}
+@keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes float3{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* MARQUEE */
+
+/* SECTION COMMON */
+.section{padding:120px 0}
+.container{max-width:1280px;margin:0 auto;padding:0 80px}
+.section-label{margin-bottom:12px}
+.section-h2{margin-bottom:16px;max-width:720px}
+.section-sub{margin-bottom:0;max-width:560px}
+.dark-section{
+  background-color:var(--dark);
+  background-image:
+    radial-gradient(ellipse 100% 45% at 50% 0%,rgba(184,136,12,.055) 0%,transparent 55%),
+    linear-gradient(rgba(184,136,12,.038) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(184,136,12,.038) 1px,transparent 1px);
+  background-size:auto,64px 64px,64px 64px;
+}
+.section-label{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.section-h2{font-family:var(--serif);font-size:clamp(2.4rem,4vw,3.8rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px;max-width:720px}
+.section-sub{font-size:1.05rem;color:var(--ink-3);line-height:1.65;max-width:560px;margin-bottom:0}
+.dark-section .section-h2{color:var(--cream)}
+.dark-section .section-sub{color:rgba(235,228,216,.6)}
+
+/* SCROLL REVEAL */
+[data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .7s var(--spring),transform .7s var(--spring)}
+[data-reveal].on{opacity:1;transform:translateY(0)}
+
+/* PROBLEM */
+.problem-intro{max-width:700px;margin-bottom:72px}
+.pain-rows{border-top:1px solid rgba(13,11,7,.1)}
+.pain-row{display:grid;grid-template-columns:80px 200px 1fr auto;gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid rgba(13,11,7,.08);transition:background .2s}
+.pain-row:hover{background:rgba(13,11,7,.02)}
+.pain-num{font-family:var(--serif);font-size:2.8rem;font-style:italic;color:rgba(13,11,7,.07);line-height:1}
+.pain-title{font-weight:700;font-size:1rem;color:var(--ink-2)}
+.pain-desc{font-size:.9rem;color:var(--ink-4);line-height:1.65}
+.pain-tag{padding:6px 14px;background:var(--cream-2);border-radius:100px;font-size:.72rem;font-weight:600;color:var(--ink-4);white-space:nowrap;border:1px solid rgba(13,11,7,.07)}
+.impact-strip{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(13,11,7,.04);border-radius:20px;margin-top:64px;overflow:hidden;border:1px solid rgba(13,11,7,.07)}
+.impact-cell{padding:40px;text-align:center;border-right:1px solid rgba(13,11,7,.08)}
+.impact-cell:last-child{border-right:none}
+.impact-num{font-family:var(--sans);font-weight:900;font-size:3rem;color:var(--em);line-height:1;margin-bottom:6px;letter-spacing:-.04em}
+.impact-label{font-weight:700;font-size:.95rem;color:var(--ink-2);margin-bottom:4px}
+.impact-sub{font-size:.8rem;color:var(--ink-4)}
+
+/* HOW IT WORKS */
+.how-statement{font-family:var(--serif);font-size:clamp(3.5rem,8vw,8.5rem);line-height:.92;letter-spacing:-.03em;margin-bottom:80px}
+.how-em{color:var(--em-2)}
+.how-bright{color:var(--cream)}
+.how-flow{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;align-items:center;max-width:1000px;margin:0 auto}
+.flow-input{background:var(--dark-3);border:1px solid var(--d-border-hi);border-radius:20px;padding:28px;box-shadow:0 0 40px rgba(184,136,12,.06)}
+.flow-b-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.flow-quote{font-family:var(--serif);font-style:italic;color:rgba(235,228,216,.85);font-size:1rem;line-height:1.6;margin-bottom:16px}
+.flow-tags{display:flex;flex-wrap:wrap;gap:8px}
+.flow-tag{padding:4px 10px;border:1px solid var(--d-border);border-radius:100px;font-size:.7rem;color:rgba(235,228,216,.5);font-weight:500}
+.flow-arrow{display:flex;justify-content:center;align-items:center}
+.flow-outputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.flow-out-card{background:var(--dark-3);border:1px solid var(--d-border);border-radius:14px;padding:18px}
+.flow-out-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.flow-out-val{font-size:.88rem;color:rgba(235,228,216,.8);font-weight:500}
+
+/* BENTO */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:64px}
+.problem-intro{max-width:700px;margin-bottom:64px}
+.b{border-radius:20px;padding:32px;overflow:hidden;position:relative;transition:all .25s var(--spring)}
+.b-cream{background:var(--card);border:1px solid rgba(13,11,7,.08)}
+.b-dark{background:var(--dark-3);border:1px solid var(--d-border)}
+.b1{grid-column:span 8;grid-row:span 2;min-height:380px}
+.b2{grid-column:span 4;min-height:180px}
+.b3{grid-column:span 4;min-height:180px}
+.b4{grid-column:span 5;min-height:200px}
+.b5{grid-column:span 7;min-height:200px}
+.b-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.b-title{font-weight:700;font-size:1.1rem;color:var(--ink-2);margin-bottom:8px;line-height:1.3}
+.b-desc{font-size:.87rem;color:var(--ink-4);line-height:1.6}
+.b-dark .b-title{color:var(--cream)}
+.b-dark .b-desc{color:rgba(235,228,216,.55)}
+.mini-portal{background:var(--dark-2);border-radius:14px;margin-top:20px;padding:16px;border:1px solid var(--d-border)}
+.mini-portal-bar{display:flex;gap:6px;margin-bottom:12px}
+.mpb{width:8px;height:8px;border-radius:50%}
+.mpb-r{background:#E86B5F}.mpb-y{background:#F4C25F}.mpb-g{background:#5FBE8C}
+.mini-rows{display:flex;flex-direction:column;gap:8px}
+.mini-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid var(--d-border)}
+.mini-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,rgba(184,136,12,.15),rgba(28,60,42,.15));border:1px solid var(--d-border-hi);flex-shrink:0}
+.mini-info{flex:1;min-width:0}
+.mini-name{font-size:.68rem;font-weight:600;color:rgba(235,228,216,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-detail{font-size:.6rem;color:rgba(235,228,216,.4)}
+.mini-val{font-size:.72rem;font-weight:700;color:var(--gold)}
+.b-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--gold-dim);border:1px solid rgba(184,136,12,.2);border-radius:100px;font-size:.72rem;font-weight:700;color:var(--gold);margin-top:16px}
+.analytics-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.a-tag{padding:4px 12px;background:rgba(184,136,12,.08);border:1px solid var(--d-border);border-radius:100px;font-size:.68rem;color:var(--gold-3);font-weight:600}
+
+/* WIN */
+.win-rows{display:flex;flex-direction:column;gap:4px;margin-top:64px}
+.win-row{display:grid;grid-template-columns:160px 1fr 1fr 180px;gap:24px;align-items:center;padding:32px 36px;background:var(--dark-2);border-radius:16px;border:1px solid var(--d-border);transition:border-color .25s var(--spring)}
+.win-row:hover{border-color:var(--d-border-hi)}
+.win-num{font-family:var(--serif);font-style:italic;font-size:3.5rem;color:var(--gold);line-height:1;letter-spacing:-.02em}
+.win-title{font-weight:700;font-size:1.05rem;color:var(--cream)}
+.win-desc{font-size:.87rem;color:rgba(235,228,216,.45)}
+.win-tag{padding:7px 16px;background:rgba(184,136,12,.08);border:1px solid var(--d-border);border-radius:100px;font-size:.75rem;font-weight:700;color:var(--gold-3);text-align:center}
+
+/* COMPARE */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:64px}
+.compare-card{border-radius:24px;padding:40px;position:relative}
+.compare-before{background:var(--cream-2);border:2px solid rgba(13,11,7,.1)}
+.compare-after{background:var(--dark-2);border:2px solid var(--d-border-hi)}
+.compare-bezel{position:absolute;inset:6px;border-radius:18px;pointer-events:none}
+.compare-before .compare-bezel{border:1px solid rgba(13,11,7,.05)}
+.compare-after .compare-bezel{border:1px solid var(--d-border)}
+.compare-head{font-weight:800;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:10px}
+.compare-before .compare-head{color:var(--ink-3)}
+.compare-after .compare-head{color:var(--gold)}
+.compare-rows{display:flex;flex-direction:column;gap:16px;position:relative;z-index:1}
+.compare-row{display:flex;align-items:flex-start;gap:12px}
+.ci{width:20px;height:20px;flex-shrink:0;margin-top:1px}
+.compare-text{font-size:.9rem;line-height:1.5}
+.compare-before .compare-text{color:var(--ink-3)}
+.compare-after .compare-text{color:rgba(235,228,216,.7)}
+
+/* CTA */
+.cta-box{background:var(--dark-2);border:1px solid var(--d-border);border-radius:28px;padding:80px;text-align:center;max-width:800px;margin:0 auto;position:relative}
+.cta-inner{position:absolute;inset:8px;border-radius:22px;border:1px solid rgba(184,136,12,.07);pointer-events:none}
+.cta-h2{font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.2rem);line-height:1.05;letter-spacing:-.02em;color:var(--cream);margin-bottom:16px}
+.cta-h2 em{font-style:italic;color:var(--gold)}
+.cta-sub{font-size:1rem;color:rgba(235,228,216,.5);margin-bottom:40px}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-cta-gold{padding:15px 32px;background:var(--gold);color:var(--dark);border-radius:100px;font-size:.95rem;font-weight:700;border:none;transition:all .25s var(--spring);cursor:none;display:inline-flex;align-items:center;text-decoration:none}
+.btn-cta-gold:hover{background:var(--gold-2);box-shadow:0 10px 40px var(--gold-glow)}
+.btn-cta-ghost{padding:15px 32px;border:1px solid rgba(235,228,216,.2);border-radius:100px;font-size:.95rem;font-weight:500;color:rgba(235,228,216,.7);transition:all .2s;background:none;cursor:none}
+.btn-cta-ghost:hover{border-color:rgba(235,228,216,.5);color:var(--cream)}
+
+/* FOOTER */
+footer{background-color:var(--dark);background-image:radial-gradient(ellipse 100% 45% at 50% 0%,rgba(184,136,12,.04) 0%,transparent 55%),linear-gradient(rgba(184,136,12,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,136,12,.03) 1px,transparent 1px);background-size:auto,64px 64px,64px 64px;padding:80px 0 40px;border-top:1px solid var(--d-border)}
+.foot-top{display:grid;grid-template-columns:1fr auto;gap:80px;margin-bottom:60px}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:32px;border-top:1px solid var(--d-border);font-size:.8rem;color:rgba(235,228,216,.28)}
+.foot-logo{font-weight:800;font-size:1.2rem;color:var(--cream);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.foot-dot{width:7px;height:7px;background:var(--gold);border-radius:50%;display:inline-block;animation:pulse-dot 2s ease-in-out infinite}
+.foot-tag{font-size:.88rem;color:rgba(235,228,216,.38);max-width:260px;line-height:1.6}
+.foot-links-row{display:flex;gap:80px}
+.foot-col{display:flex;flex-direction:column;gap:14px}
+.foot-col-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(235,228,216,.28);margin-bottom:4px}
+.foot-col a{font-size:.88rem;color:rgba(235,228,216,.48);transition:color .2s}
+.foot-col a:hover{color:var(--cream)}
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;padding:120px 40px 80px;min-height:auto;gap:0}
+  .hero-right{display:none}
+  .container{padding:0 48px}
+  .section{padding:96px 0}
+  .bento{grid-template-columns:1fr}
+  .b1,.b2,.b3,.b4,.b5{grid-column:span 1;grid-row:span 1}
+  .b1{min-height:400px}.b2,.b3,.b4,.b5{min-height:280px}
+  .compare-grid{grid-template-columns:1fr}
+  .how-flow{grid-template-columns:1fr;gap:24px}
+  .flow-arrow svg{transform:rotate(90deg)}
+  .pain-row{grid-template-columns:60px 1fr;gap:16px}
+  .pain-desc,.pain-tag{display:none}
+  .win-row{grid-template-columns:100px 1fr 1fr;padding:24px 28px}
+  .win-desc{display:none}
+  .nav-links{display:none}
+  .foot-top{grid-template-columns:1fr;gap:40px}
+}
+@media(max-width:768px){
+  .hero{padding:100px 28px 60px}
+  .hero-left{align-items:center;text-align:center}
+  .hero-sub{text-align:center}
+  .hero-eyebrow{align-self:center}
+  .hero-stats{justify-content:center}
+  .hero-cta{justify-content:center}
+  .container{padding:0 28px}
+  .section{padding:72px 0}
+  .win-row{padding:20px 24px}
+  .how-statement{font-size:clamp(2.8rem,10vw,4rem)}
+  .impact-strip{grid-template-columns:1fr}
+  .impact-cell{border-right:none;border-bottom:1px solid rgba(13,11,7,.08)}
+  .impact-cell:last-child{border-bottom:none}
+  .cta-box{padding:48px 32px}
+  .foot-links-row{gap:40px}
+  .foot-bottom{flex-direction:column;gap:8px;text-align:center}
+}
+@media(max-width:480px){
+  .container{padding:0 20px}
+  .section{padding:56px 0}
+  .hero{padding:88px 20px 48px}
+  .hero-stats{flex-wrap:nowrap;gap:0;justify-content:center}
+  .stat-div{display:block;height:24px;width:1px}
+  .stat-item{padding:0 12px}
+  .stat-val{font-size:1.15rem}
+  .stat-label{font-size:.6rem}
+  .win-row{grid-template-columns:80px 1fr}
+  .win-tag{display:none}
+  .nav{width:calc(100% - 24px)}
+  .btn-nav-ghost{display:none}
+  .cta-box{padding:36px 20px}
+  .foot-links-row{flex-direction:column;gap:32px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo"><span class="nav-dot" aria-hidden="true"></span>Intelo</a>
+  <ul class="nav-links">
+    <li><a href="features.html">Features</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="pricing.html" class="btn-nav-ghost">View pricing</a>
+    <a href="pricing.html" class="btn-nav">Get early access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow" data-reveal>
+      <span class="eyebrow-dot" aria-hidden="true"></span>
+      Chat-First AI CRM &mdash; For High-Value Brokers
+    </div>
+    <h1 class="hero-h1">
+      <span class="line-1">Chat is</span>
+      <span class="line-2"><em>the real</em></span>
+      <span class="line-3"><span class="em-word">CRM.</span></span>
+    </h1>
+    <p class="hero-sub" data-reveal>From the moment a deal is mentioned in chat to the final payment cleared &mdash; Intelo structures every deal, tracks every payment, and manages every delivery. Zero data entry.</p>
+    <div class="hero-stats" data-reveal>
+      <div class="stat-item">
+        <span class="stat-val"><span data-counter="0">0</span></span>
+        <span class="stat-label">Data entry</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-val"><span data-counter="10">0</span>&times;</span>
+        <span class="stat-label">Visibility</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-val"><span data-counter="100">0</span>%</span>
+        <span class="stat-label">Adoption</span>
+      </div>
+    </div>
+    <div class="hero-cta" data-reveal>
+      <a href="pricing.html" class="btn-hero-gold">
+        Get early access
+      </a>
+    </div>
+  </div>
+  <div class="hero-right" aria-hidden="true">
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="chat-label">Intelo AI</div>
+          <div class="msg msg-user msg-1">hey i just sold a Patek to james</div>
+          <div class="msg msg-ai msg-2">Congrats. Which reference, and what was the final number?</div>
+          <div class="msg msg-voice msg-user msg-3">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(184,136,12,.9)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            <div class="waveform"><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div></div>
+            <span class="msg-voice-text">0:09</span>
+          </div>
+          <div class="msg msg-ai msg-4">Deal locked. Patek Philippe Nautilus 5711 — AED 485,000. Client: James Morrison. Commission logged. Full record created.</div>
+          <div class="typing-dots msg-5" aria-label="Typing">
+            <div class="dot-t"></div><div class="dot-t"></div><div class="dot-t"></div>
+          </div>
+        </div>
+      </div>
+      <div class="chip chip-deal">
+        <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Deal Logged
+      </div>
+      <div class="chip chip-client">
+        <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="var(--em)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Client Remembered
+      </div>
+      <div class="chip chip-pipeline">
+        <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        AED 5.2M Pipeline
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section" id="problem">
+  <div class="container">
+    <div class="problem-intro" data-reveal>
+      <div class="section-label">The Problem</div>
+      <h2 class="section-h2">Brokers live in their chats.<br>CRMs don&rsquo;t.</h2>
+      <p class="section-sub">Every deal is scattered across WhatsApp, voice memos, and screenshots. Traditional CRMs demand structured input brokers will never give.</p>
+    </div>
+    <div class="pain-rows" data-reveal>
+      <div class="pain-row">
+        <div class="pain-num" aria-hidden="true">01</div>
+        <div class="pain-title">Deals die in WhatsApp</div>
+        <div class="pain-desc">Client details, requirements, and follow-ups are buried across hundreds of chat threads with no structure or searchability.</div>
+        <div class="pain-tag">Zero visibility</div>
+      </div>
+      <div class="pain-row">
+        <div class="pain-num" aria-hidden="true">02</div>
+        <div class="pain-title">Voice notes go nowhere</div>
+        <div class="pain-desc">Brokers capture their best insights by voice &mdash; then those recordings are never transcribed, structured, or actioned.</div>
+        <div class="pain-tag">Lost intelligence</div>
+      </div>
+      <div class="pain-row">
+        <div class="pain-num" aria-hidden="true">03</div>
+        <div class="pain-title">CRMs demand too much</div>
+        <div class="pain-desc">Every CRM requires data entry workflows brokers resent. Adoption fails within weeks. Investment wasted.</div>
+        <div class="pain-tag">0% adoption</div>
+      </div>
+      <div class="pain-row">
+        <div class="pain-num" aria-hidden="true">04</div>
+        <div class="pain-title">Knowledge leaves with the broker</div>
+        <div class="pain-desc">When a broker leaves, everything they know about clients, deals, and relationships disappears with them.</div>
+        <div class="pain-tag">Business risk</div>
+      </div>
+    </div>
+    <div class="impact-strip" data-reveal>
+      <div class="impact-cell">
+        <div class="impact-num" data-counter="0">0</div>
+        <div class="impact-label">Deals tracked</div>
+        <div class="impact-sub">without Intelo</div>
+      </div>
+      <div class="impact-cell">
+        <div class="impact-num" data-counter="100">0</div>
+        <div class="impact-label">% insight missed</div>
+        <div class="impact-sub">in voice &amp; chat</div>
+      </div>
+      <div class="impact-cell">
+        <div class="impact-num" data-counter="1">0</div>
+        <div class="impact-label">Broker leaves</div>
+        <div class="impact-sub">= clients gone forever</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section dark-section" id="how">
+  <div class="container">
+    <div class="section-label" data-reveal>How it works</div>
+    <div class="how-statement" data-reveal>
+      <span class="how-bright">Say it</span><br>
+      <span class="how-em">once.</span><br>
+      <span class="how-bright">Done.</span>
+    </div>
+    <div class="how-flow" data-reveal>
+      <div class="flow-input">
+        <div class="flow-b-label">Broker says or types</div>
+        <div class="flow-quote">&ldquo;Sold a Patek 5711 to James for 485k &mdash; payment 30k upfront, rest pending. Hold the Nautilus for Ahmed.&rdquo;</div>
+        <div class="flow-tags">
+          <span class="flow-tag">Voice note</span>
+          <span class="flow-tag">WhatsApp</span>
+          <span class="flow-tag">Chat</span>
+        </div>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="flow-outputs">
+        <div class="flow-out-card">
+          <div class="flow-out-label">Deal Created</div>
+          <div class="flow-out-val">Patek 5711 &mdash; AED 485,000</div>
+        </div>
+        <div class="flow-out-card">
+          <div class="flow-out-label">Payment</div>
+          <div class="flow-out-val">AED 30k received &middot; Partial</div>
+        </div>
+        <div class="flow-out-card">
+          <div class="flow-out-label">Reserved</div>
+          <div class="flow-out-val">Nautilus held for Ahmed</div>
+        </div>
+        <div class="flow-out-card">
+          <div class="flow-out-label">Follow-up</div>
+          <div class="flow-out-val">Payment reminder set</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES BENTO -->
+<section class="section" id="features">
+  <div class="container">
+    <div data-reveal>
+      <div class="section-label">Features</div>
+      <h2 class="section-h2">Every feature<br>built for brokers.</h2>
+    </div>
+    <div class="bento">
+      <div class="b b-cream b1" data-reveal>
+        <div class="b-label">Deal Pipeline</div>
+        <h3 class="b-title">Every deal, payment &amp; delivery in one view.</h3>
+        <p class="b-desc">Auto-structured from chat. Updated in real time.</p>
+        <div class="mini-portal">
+          <div class="mini-portal-bar" aria-hidden="true"><div class="mpb mpb-r"></div><div class="mpb mpb-y"></div><div class="mpb mpb-g"></div></div>
+          <div class="mini-rows">
+            <div class="mini-row"><div class="mini-avatar" aria-hidden="true"></div><div class="mini-info"><div class="mini-name">Morrison &mdash; Patek Nautilus 5711</div><div class="mini-detail">AED 485,000 &bull; Reserved</div></div><div class="mini-val" style="font-size:.62rem;padding:2px 7px;background:rgba(184,136,12,.12);border-radius:100px;color:var(--gold)">Partial</div></div>
+            <div class="mini-row"><div class="mini-avatar" aria-hidden="true"></div><div class="mini-info"><div class="mini-name">Al-Farsi &mdash; Rolex Daytona 116500</div><div class="mini-detail">AED 120,000 &bull; Delivered</div></div><div class="mini-val" style="font-size:.62rem;padding:2px 7px;background:rgba(28,60,42,.1);border-radius:100px;color:var(--em-2)">Paid</div></div>
+            <div class="mini-row"><div class="mini-avatar" aria-hidden="true"></div><div class="mini-info"><div class="mini-name">Chen &mdash; AP Royal Oak 15500</div><div class="mini-detail">AED 210,000 &bull; Out for delivery</div></div><div class="mini-val" style="font-size:.62rem;padding:2px 7px;background:rgba(255,255,255,.05);border:1px solid var(--d-border);border-radius:100px;color:rgba(235,228,216,.45)">Pending</div></div>
+            <div class="mini-row"><div class="mini-avatar" aria-hidden="true"></div><div class="mini-info"><div class="mini-name">Al-Rashidi &mdash; Patek Grand Complication</div><div class="mini-detail">AED 920,000 &bull; Active</div></div><div class="mini-val" style="font-size:.62rem;padding:2px 7px;background:rgba(184,136,12,.12);border-radius:100px;color:var(--gold)">Partial</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="b b-dark b2" data-reveal>
+        <div class="b-label">Payments</div>
+        <h3 class="b-title">Cash to crypto, every dirham tracked.</h3>
+        <p class="b-desc">Update payment status from chat. Generate invoices instantly. Automatic reminders for overdue payments.</p>
+      </div>
+      <div class="b b-dark b3" data-reveal>
+        <div class="b-label">Inventory</div>
+        <h3 class="b-title">Smart stock search.</h3>
+        <p class="b-desc">&ldquo;Do I have any blue dial Rolex?&rdquo; &mdash; answered instantly. Dead stock flagged automatically.</p>
+      </div>
+      <div class="b b-cream b4" data-reveal>
+        <div class="b-label">Delivery</div>
+        <h3 class="b-title">Driver texts &ldquo;Delivered.&rdquo; Deal updates itself.</h3>
+        <p class="b-desc">Full delivery tracking, proof of delivery, and driver assignment &mdash; all via WhatsApp.</p>
+        <div class="b-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Zero manual updates
+        </div>
+      </div>
+      <div class="b b-dark b5" data-reveal>
+        <div class="b-label">AI + Team</div>
+        <h3 class="b-title">Ask anything. Control everything.</h3>
+        <p class="b-desc" style="margin-bottom:0">Natural language profit queries, smart restock alerts, role-based access, and commission tracking per broker.</p>
+        <div class="analytics-tags" style="margin-top:16px">
+          <span class="a-tag">AI Queries</span>
+          <span class="a-tag">Commissions</span>
+          <span class="a-tag">Roles</span>
+          <span class="a-tag">Audit Trail</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WIN INSTANTLY -->
+<section class="section dark-section">
+  <div class="container">
+    <div data-reveal>
+      <div class="section-label">Results</div>
+      <h2 class="section-h2">Brokers <em style="font-family:var(--serif);color:var(--gold);font-style:italic">WIN</em> instantly.</h2>
+    </div>
+    <div class="win-rows" data-reveal>
+      <div class="win-row">
+        <div class="win-num">0</div>
+        <div class="win-title">No manual data entry</div>
+        <div class="win-desc">Every deal logs itself from chat, voice, and photo. No CRM interface required.</div>
+        <div class="win-tag">Zero effort</div>
+      </div>
+      <div class="win-row">
+        <div class="win-num">100%</div>
+        <div class="win-title">No workflow change</div>
+        <div class="win-desc">Works inside WhatsApp, voice, and chat. No new habits required. Instant adoption.</div>
+        <div class="win-tag">Full adoption</div>
+      </div>
+      <div class="win-row">
+        <div class="win-num">10&times;</div>
+        <div class="win-title">Visibility</div>
+        <div class="win-desc">Management sees every deal, every client, every follow-up in real time.</div>
+        <div class="win-tag">Real-time</div>
+      </div>
+      <div class="win-row">
+        <div class="win-num">0</div>
+        <div class="win-title">Zero lost deals</div>
+        <div class="win-desc">Perfect recall on every client requirement, preference, and conversation history.</div>
+        <div class="win-tag">Perfect recall</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section class="section" id="compare">
+  <div class="container">
+    <div data-reveal>
+      <div class="section-label">Before &amp; After</div>
+      <h2 class="section-h2">A different way to work.</h2>
+    </div>
+    <div class="compare-grid" data-reveal>
+      <div class="compare-card compare-before">
+        <div class="compare-bezel" aria-hidden="true"></div>
+        <div class="compare-head">
+          <svg class="ci" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Before Intelo
+        </div>
+        <div class="compare-rows">
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="compare-text">Deals buried in WhatsApp threads</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="compare-text">Voice notes never actioned</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="compare-text">CRM ignored after week 2</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="compare-text">Follow-ups missed, clients lost</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="compare-text">Knowledge leaves with the broker</span></div>
+        </div>
+      </div>
+      <div class="compare-card compare-after">
+        <div class="compare-bezel" aria-hidden="true"></div>
+        <div class="compare-head">
+          <svg class="ci" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          After Intelo
+        </div>
+        <div class="compare-rows">
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span class="compare-text">Every deal auto-structured from chat</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span class="compare-text">Voice notes transcribed &amp; actioned instantly</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span class="compare-text">100% broker adoption &mdash; no habit change</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span class="compare-text">Automated reminders, zero missed follow-ups</span></div>
+          <div class="compare-row"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span class="compare-text">Institutional knowledge preserved forever</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section dark-section">
+  <div class="container">
+    <div class="cta-box" data-reveal>
+      <div class="cta-inner" aria-hidden="true"></div>
+      <h2 class="cta-h2">The <em>smartest</em><br>broker wins.</h2>
+      <p class="cta-sub">Join the brokers closing more deals with less effort. Early access is limited.</p>
+      <div class="cta-btns">
+        <a href="pricing.html" class="btn-cta-gold">Get early access</a>
+        <a href="contact.html" class="btn-cta-ghost">Book a walkthrough</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="foot-logo"><span class="foot-dot" aria-hidden="true"></span>Intelo</div>
+        <p class="foot-tag">Chat-First AI CRM for High-Value Brokers.</p>
+      </div>
+      <div class="foot-links-row">
+        <div class="foot-col">
+          <div class="foot-col-title">Product</div>
+          <a href="features.html">Features</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="#how">How it works</a>
+        </div>
+        <div class="foot-col">
+          <div class="foot-col-title">Company</div>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="#">Privacy</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Intelo. All rights reserved.</span>
+      <span>A product of Syed Adeel Syed Humair</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+const ring = document.getElementById('cursor-ring');
+const dot  = document.getElementById('cursor-dot');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function animCursor(){
+  rx+=(mx-rx)*.14; ry+=(my-ry)*.14;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  dot.style.left=mx+'px';  dot.style.top=my+'px';
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'));
+});
+
+// HERO ENTRANCE
+window.addEventListener('DOMContentLoaded',()=>{
+  const l1=document.querySelector('.hero-h1 .line-1');
+  const l2=document.querySelector('.hero-h1 .line-2');
+  const l3=document.querySelector('.hero-h1 .line-3');
+  setTimeout(()=>l1&&l1.classList.add('on'),200);
+  setTimeout(()=>l2&&l2.classList.add('on'),400);
+  setTimeout(()=>l3&&l3.classList.add('on'),600);
+});
+
+// NAV DARK DETECTION
+const nav=document.getElementById('nav');
+const darkSecs=document.querySelectorAll('.dark-section');
+function checkNav(){
+  const nb=nav.getBoundingClientRect().bottom;
+  let dark=false;
+  darkSecs.forEach(s=>{const r=s.getBoundingClientRect();if(r.top<=nb&&r.bottom>=0)dark=true;});
+  nav.classList.toggle('dark-nav',dark);
+}
+window.addEventListener('scroll',checkNav,{passive:true});
+checkNav();
+
+// SCROLL REVEAL
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');revObs.unobserve(e.target);}});
+},{threshold:.1});
+document.querySelectorAll('[data-reveal]').forEach(el=>revObs.observe(el));
+
+// MAGNETIC BUTTONS
+document.querySelectorAll('.btn-nav,.btn-hero-gold,.btn-cta-gold').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const dx=e.clientX-(r.left+r.width/2);
+    const dy=e.clientY-(r.top+r.height/2);
+    btn.style.transform=`translate(${dx*.25}px,${dy*.25}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>btn.style.transform='');
+});
+
+// COUNTER ANIMATION
+function animCounter(el,target,dur=1800){
+  const start=performance.now();
+  (function step(now){
+    const t=Math.min((now-start)/dur,1);
+    const ease=1-Math.pow(1-t,4);
+    el.textContent=Math.round(ease*target);
+    if(t<1)requestAnimationFrame(step);
+  })(start);
+}
+const cntObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      animCounter(e.target,parseInt(e.target.dataset.counter,10));
+      cntObs.unobserve(e.target);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-counter]').forEach(el=>cntObs.observe(el));
+
+// HERO PARALLAX — native scroll, no library lag
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const heroLeft=document.querySelector('.hero-left');
+  const heroRight=document.querySelector('.hero-right');
+  if(!heroLeft||!heroRight) return;
+
+  let ticking=false;
+  const vh=window.innerHeight;
+
+  function run(){
+    const y=window.scrollY;
+    // only active while hero is in view (first viewport height worth of scroll)
+    if(y>vh){
+      ticking=false;
+      return;
+    }
+    const p=y/vh; // 0→1 as user scrolls one full screen
+
+    // Left column: rises up fast + fades out
+    heroLeft.style.transform=`translateY(${p*-80}px)`;
+    heroLeft.style.opacity=String(Math.max(0,1-p*2.2));
+
+    // Right (phone): rises slower → depth
+    heroRight.style.transform=`translateY(${p*-36}px)`;
+    heroRight.style.opacity=String(Math.max(0,1-p*1.6));
+
+    ticking=false;
+  }
+
+  window.addEventListener('scroll',()=>{
+    if(!ticking){requestAnimationFrame(run);ticking=true;}
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
